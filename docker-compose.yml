@@ -1,0 +1,175 @@
+services:
+  dhis2:
+    image: "${DHIS2_IMAGE:-dhis2/core:42.1.0}"
+    restart: unless-stopped
+    volumes:
+      - ./config/dhis2/dhis.conf:/opt/dhis2/dhis.conf:ro
+    environment:
+      JAVA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1:8080/dhis-web-login/ 2>&1| grep -q 'HTTP.*200'" ]
+      start_period: 120s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - default
+      - middleware
+      - db
+
+  db:
+    image: ghcr.io/baosystems/postgis:13-3.4
+    volumes:
+      - ./db-dump:/docker-entrypoint-initdb.d/:ro
+    environment:
+      POSTGRES_USER: dhis
+      POSTGRES_DB: dhis
+      POSTGRES_PASSWORD: &postgres_password dhis
+      PGPASSWORD: *postgres_password # needed by psql in healthcheck
+    healthcheck:
+      test: [ "CMD-SHELL", "psql --no-password --quiet --username $$POSTGRES_USER postgres://127.0.0.1/$$POSTGRES_DB -p 5432 --command \"SELECT 'ok'\" > /dev/null" ]
+      start_period: 120s
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - db
+
+  gateway:
+    image: nginx
+    restart: always
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+    ports:
+      - "${DHIS2_PORT:-8080}:80"
+    volumes:
+      - ./config/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    security_opt:
+      - no-new-privileges:true
+
+  civil-registry:
+    image: "hapiproject/hapi:v7.4.0-tomcat"
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8080" ]
+      start_period: 60s
+      interval: 5s
+      timeout: 1s
+      retries: 5
+    networks:
+      - civil-registry
+
+  identity-provider:
+    image: "quay.io/keycloak/keycloak:25.0.6"
+    environment:
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "admin"
+      KC_HEALTH_ENABLED: "true"
+
+      # comment KC_HOSTNAME and KC_HOSTNAME_BACKCHANNEL_DYNAMIC to test Keycloak from Docker host
+      KC_HOSTNAME: "http://identity-provider:8080"
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'"
+        ]
+      start_period: 120s
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./config/identity-provider/civil-registry-realm.json:/opt/keycloak/data/import/civil-registry-realm.json:ro
+    command: [ "start-dev", "--import-realm" ]
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - auth
+
+  auth-proxy:
+    image: "quay.io/oauth2-proxy/oauth2-proxy:v7.6.0"
+    command: --config /oauth2-proxy.cfg
+    volumes:
+      - "./config/auth-proxy/oauth2-proxy-keycloak.cfg:/oauth2-proxy.cfg"
+    depends_on:
+      identity-provider:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - auth
+      - civil-registry
+
+  oauth-route-middleware:
+    build: ./oauth-route-middleware
+    restart: always
+    environment:
+      CIVIL_REGISTRY_URL: http://auth-proxy:4180/fhir
+      OAUTH2_TOKENENDPOINT: http://identity-provider:8080/realms/civil-registry/protocol/openid-connect/token
+      OAUTH2_CLIENTID: civil-registry-client
+      OAUTH2_CLIENTSECRET: ibz2lEXdGe02CJS2N7tY13r6664eJpoX
+    depends_on:
+      identity-provider:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - middleware
+      - auth
+
+  seed:
+    image: curlimages/curl
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        curl -X POST -s --max-time 0 -H "Content-Type: application/json" -d @/persons.json http://civil-registry:8080/fhir
+        curl -X PATCH -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/roles.json http://dhis2:8080/userRoles/yrB6vc5Ip3r
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/route.json http://dhis2:8080/api/routes
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/pluginConfig.json http://dhis2:8080/api/dataStore/capture/dataEntryForms
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/personMap.json http://dhis2:8080/api/dataStore/civilRegistryPlugin/personMap
+
+      # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://dhis2:8080/api/apps'
+      # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://dhis2:8080/api/apps'
+    volumes:
+      - ./config/civil-registry/persons.json:/persons.json:ro
+      - ./config/dhis2/roles.json:/roles.json:ro
+      - ./config/dhis2/route.json:/route.json:ro
+      - ./config/dhis2/pluginConfig.json:/pluginConfig.json:ro
+      - ./config/dhis2/personMap.json:/personMap.json:ro
+      #- ./civil-registry-plugin/build/bundle/:/civil-registry-plugin/:ro
+      #- ./route-manager-app/build/bundle/:/route-manager-app/:ro
+    depends_on:
+      civil-registry:
+        condition: service_healthy
+      dhis2:
+        condition: service_healthy
+    networks:
+      - default
+      - civil-registry
+
+volumes:
+  db-dump: { }
+  files:
+    driver: local
+  postgresql:
+    driver: local
+
+networks:
+  civil-registry:
+    internal: true
+  auth:
+    internal: true
+  middleware:
+    internal: true
+  db:
+    internal: true
