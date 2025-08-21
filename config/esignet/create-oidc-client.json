@@ -1,0 +1,48 @@
+{
+  "requestTime": "<ISO_TIMESTAMP>",
+  "request": {
+    "clientId": "IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmW8b7",
+    "clientName": "Lockman - Bechtelar",
+    "publicKey": {
+      "kty": "RSA",
+      "n": "mW8b7NhttEiCIVRYDVWCMoQWOB8UIPTnI22prJ_SR8YZUngVIfSx360U-mJBVG0YtReS2Vo0TTDotSzuyAiBgRgJInyJ10gqD4aeMHfSjGQ5AsNYly7qlrp9aiUdS3kYleboChtuA8AO5p-qnjntCQLll_P2zsHCPaATQllM32T9uNCtR39FnlG6FNs31P79mi_kPsJgWV5Lg5n0QXvmkzxs-rG5sAuCPIXtqK5R3bJ63YZqszBMsodMabI1NSCVpQMPEiDZgwgvjZEaQ-LNO1d5wC6yCPlewYfh1xSg4uKOftXBpw22VgDIbMJXmkJAQrbt9YjWUyhXHYtOxXWyxw",
+      "e": "AQAB",
+      "kid": "5VQHq-QebWikQZsa_WhTvBSBbwWmQwVr2ksv3ByZ-_0"
+    },
+    "relyingPartyId": "mock-relying-party-id",
+    "userClaims": [
+      "name",
+      "email",
+      "gender",
+      "phone_number",
+      "picture",
+      "birthdate"
+    ],
+    "authContextRefs": [
+      "mosip:idp:acr:generated-code",
+      "mosip:idp:acr:password",
+      "mosip:idp:acr:linked-wallet"
+    ],
+    "logoUri": "http://placeimg.com/640/480",
+    "redirectUris": [
+      "io.mosip.residentapp://oauth",
+      "http://localhost:5000/**",
+      "http://localhost:3000/registration/*"
+    ],
+    "grantTypes": [
+      "authorization_code"
+    ],
+    "clientAuthMethods": [
+      "private_key_jwt"
+    ],
+    "additionalConfig": {
+      "userinfo_response_type": "JWS",
+      "purpose": {
+        "type": "verify"
+      },
+      "signup_banner_required": true,
+      "forgot_pwd_link_required": true,
+      "consent_expire_in_mins": 20
+    }
+  }
+}
