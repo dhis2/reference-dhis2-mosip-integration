@@ -29,6 +29,10 @@ services:
       - SPRING_DATASOURCE_PASSWORD=postgres
       - MOSIP_MOCK_IDA_KYC_TRANSACTION_TIMEOUT_SECS=900
       - MOSIP_ESIGNET_HOST=localhost:8088
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8082" ]
+      interval: 5s
+      retries: 5
     depends_on:
       - database
 
@@ -51,9 +55,7 @@ services:
       - SPRING_AUTOCONFIGURE_EXCLUDE=org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
     healthcheck:
       test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8088" ]
-      start_period: 60s
       interval: 5s
-      timeout: 1s
       retries: 5
     depends_on:
       - database
@@ -88,4 +90,19 @@ services:
       - ./config/esignet/create-oidc-client.json:/create-oidc-client.json:ro
     depends_on:
       esignet:
+        condition: service_healthy
+
+  create-user:
+    image: curlimages/curl
+    user: root
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        body=$(cat /create-user.json | sed "s/<ISO_TIMESTAMP>/$(date -u +%FT%T.%3SZ)/g")
+        curl --header 'Content-Type: application/json' -d "$$body" http://mock-identity-system:8082/v1/mock-identity-system/identity
+    volumes:
+      - ./config/esignet/create-user.json:/create-user.json:ro
+    depends_on:
+      mock-identity-system:
         condition: service_healthy
