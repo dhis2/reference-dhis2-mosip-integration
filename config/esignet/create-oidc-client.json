@@ -2,32 +2,34 @@
   "requestTime": "<ISO_TIMESTAMP>",
   "request": {
     "clientId": "IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArLeYj",
-    "clientName": "Lockman - Bechtelar",
+    "clientName": "DHIS2",
+    "relyingPartyId": "dhis2",
+    "logoUri": "https://raw.githubusercontent.com/dhis2/dhis2-identity/refs/heads/master/web/Icon%20only/Default/dhis2-icon-rgb-positive.png",
     "publicKey": {
       "kty": "RSA",
       "n": "rLeYj_gYR2RJF9GdGVM2n K_1vdZc53VrW4xeFSgCaf1cadWliNOXfin4MZ9RC7DEMbtGAFXcytwnvvKoUY8oiSOYk7Gk4HMFmUzbErXkcoOg6BrXD1tuUzX2Jo5yCjNknpM-FE3Illru_Iu4w0FpwXd4pNkpfmzowdE52JtozPNj-kpCQhz8rR4UCQD3RYqaajK73p7hEMiy9GIkdwRugYeG3do-Z1Qr1ugV6LKTgRNZZ1Vgbp7_1yxNicOPJDlqky1odHJEF7mXWeuJOPYFkyTgMvIni6rNgU4UbEVAS-7tC5mJUQ86NSia5QmuLuUl3oAQi5WQdZb4mT7XuGDbJw",
       "e": "AQAB",
       "kid": "sKETdAD9bSgIe09-J5xqEX5I_wJx73wyqad-CNlr6ow"
     },
-    "relyingPartyId": "mock-relying-party-id",
     "userClaims": [
       "name",
       "email",
       "gender",
       "phone_number",
       "picture",
-      "birthdate"
+      "birthdate",
+      "address"
     ],
     "authContextRefs": [
       "mosip:idp:acr:generated-code",
       "mosip:idp:acr:password",
       "mosip:idp:acr:linked-wallet"
     ],
-    "logoUri": "http://placeimg.com/640/480",
     "redirectUris": [
-      "io.mosip.residentapp://oauth",
+      "http://localhost:8080/**",
       "http://localhost:5000/**",
-      "http://localhost:3000/registration/*"
+      "http://localhost:4000/**",
+      "http://localhost:3000/**"
     ],
     "grantTypes": [
       "authorization_code"
