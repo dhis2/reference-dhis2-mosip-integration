@@ -157,6 +157,17 @@ services:
       - default
       - civil-registry
 
+  mock-relying-party-service:
+    image: 'mosipid/mock-relying-party-service:0.11.1'
+    user: root
+    ports:
+      - 8888:8888
+    environment:
+      - ESIGNET_SERVICE_URL=http://esignet/v1/esignet
+    depends_on:
+      esignet:
+        condition: service_healthy
+
 volumes:
   db-dump: { }
   files:
