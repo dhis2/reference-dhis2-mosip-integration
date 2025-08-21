@@ -94,7 +94,6 @@ services:
 
   create-user:
     image: curlimages/curl
-    user: root
     command:
       - "/bin/sh"
       - "-c"
