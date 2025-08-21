@@ -20,7 +20,7 @@
     "deploy-plugin": "cd civil-registry-plugin && yarn deploy http://localhost:8080 --username admin --password district",
     "deploy-app": "cd route-manager-app && yarn deploy http://localhost:8080 --username admin --password district",
     "deploy": "wait-on http-get://localhost:8080/api/ping && yarn deploy-app && yarn deploy-plugin",
-    "start-services": "docker compose up --build --renew-anon-volumes --force-recreate --remove-orphans",
+    "start-services": "docker compose up -f esignet-docker-compose.yml -f docker-compose.ym --build --renew-anon-volumes --force-recreate --remove-orphans",
     "start": "concurrently --kill-others-on-fail \"yarn:start-services\" \"yarn:deploy\"",
     "test": "playwright test"
   }
