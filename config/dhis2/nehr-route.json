@@ -1,6 +1,6 @@
 {
-  "name": "Civil Registry",
-  "code": "civil-registry",
+  "name": "National Electronic Health Record",
+  "code": "nehr",
   "url": "http://oauth-route-middleware:9070/api/find",
   "headers": {
     "Content-Type": "application/json"
