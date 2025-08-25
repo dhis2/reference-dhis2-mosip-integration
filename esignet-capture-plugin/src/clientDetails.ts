@@ -1,7 +1,7 @@
 const _env_ = {
-    CLIENT_ID: 'IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4NAKs',
+    CLIENT_ID: 'IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAihRRW',
     ESIGNET_UI_BASE_URL: 'http://localhost:4000',
-    REDIRECT_URI: 'http://localhost:3000/#redirect',
+    REDIRECT_URI: 'http://localhost:3000/#userInfo',
     // todo
     REDIRECT_URI_USER_PROFILE: 'http://localhost:5000/userData',
     REDIRECT_URI_REGISTRATION: 'http://localhost:5000/registration',
@@ -9,8 +9,8 @@ const _env_ = {
     ACRS: 'mosip:idp:acr:generated-code%20mosip:idp:acr:biometrics%20mosip:idp:acr:static-code',
     SCOPE_USER_PROFILE: 'openid%20profile%20resident-service',
     SCOPE_REGISTRATION: 'openid%20profile',
-    CLAIMS_USER_PROFILE:
-        '%7B%22userinfo%22:%7B%22given_name%22:%7B%22essential%22:true%7D,%22phone_number%22:%7B%22essential%22:false%7D,%22email%22:%7B%22essential%22:true%7D,%22picture%22:%7B%22essential%22:false%7D,%22gender%22:%7B%22essential%22:false%7D,%22birthdate%22:%7B%22essential%22:false%7D,%22address%22:%7B%22essential%22:false%7D%7D,%22id_token%22:%7B%7D%7D',
+    CLAIMS_USER_PROFILE: undefined,
+        // '%7B%22userinfo%22:%7B%22given_name%22:%7B%22essential%22:true%7D,%22phone_number%22:%7B%22essential%22:false%7D,%22email%22:%7B%22essential%22:true%7D,%22picture%22:%7B%22essential%22:false%7D,%22gender%22:%7B%22essential%22:false%7D,%22birthdate%22:%7B%22essential%22:false%7D,%22address%22:%7B%22essential%22:false%7D%7D,%22id_token%22:%7B%7D%7D',
     CLAIMS_REGISTRATION:
         '%7B%22userinfo%22:%7B%22given_name%22:%7B%22essential%22:true%7D,%22phone_number%22:%7B%22essential%22:false%7D,%22email%22:%7B%22essential%22:true%7D,%22picture%22:%7B%22essential%22:false%7D,%22gender%22:%7B%22essential%22:false%7D,%22birthdate%22:%7B%22essential%22:false%7D,%22address%22:%7B%22essential%22:false%7D%7D,%22id_token%22:%7B%7D%7D',
     SIGN_IN_BUTTON_PLUGIN_URL:
@@ -59,6 +59,7 @@ const claimsLocales = checkEmptyNullValue(_env_.CLAIMS_LOCALES, 'en')
 const authorizeEndpoint = '/authorize'
 const clientId = _env_.CLIENT_ID
 const uibaseUrl = _env_.ESIGNET_UI_BASE_URL
+const redirect_uri = _env_.REDIRECT_URI
 const redirect_uri_userprofile = checkEmptyNullValue(
     _env_.REDIRECT_URI_USER_PROFILE,
     _env_.REDIRECT_URI
@@ -68,19 +69,22 @@ const redirect_uri_registration = checkEmptyNullValue(
     _env_.REDIRECT_URI
 )
 const acr_values = _env_.ACRS
-const userProfileClaims = checkEmptyNullValue(_env_.CLAIMS_USER_PROFILE, '{}')
+// const userProfileClaims = checkEmptyNullValue(_env_.CLAIMS_USER_PROFILE, '{}')
 const registrationClaims = checkEmptyNullValue(_env_.CLAIMS_REGISTRATION, '{}')
 
 const claims = {
     userinfo: {
-        given_name: {
+        name: {
+            essential: true,
+        },
+        email: {
+            essential: true,
+        },
+        individual_id: {
             essential: true,
         },
         phone_number: {
             essential: false,
-        },
-        email: {
-            essential: true,
         },
         picture: {
             essential: false,
@@ -106,6 +110,7 @@ const clientDetails = {
     scopeUserProfile: scopeUserProfile,
     scopeRegistration: scopeRegistration,
     response_type: responseType,
+    redirect_uri: redirect_uri,
     redirect_uri_userprofile: redirect_uri_userprofile,
     redirect_uri_registration: redirect_uri_registration,
     display: display,
@@ -116,7 +121,7 @@ const clientDetails = {
     grant_type: grantType,
     uibaseUrl: uibaseUrl,
     authorizeEndpoint: authorizeEndpoint,
-    userProfileClaims: userProfileClaims ?? encodeURI(JSON.stringify(claims)),
+    userProfileClaims: /* userProfileClaims ?? */ encodeURI(JSON.stringify(claims)),
     registrationClaims: registrationClaims ?? encodeURI(JSON.stringify(claims)),
 }
 
