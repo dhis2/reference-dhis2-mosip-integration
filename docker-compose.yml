@@ -133,7 +133,8 @@ services:
       - |
         curl -X POST -s --max-time 0 -H "Content-Type: application/json" -d @/persons.json http://civil-registry:8080/fhir
         curl -X PATCH -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/roles.json http://dhis2:8080/userRoles/yrB6vc5Ip3r
-        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/route.json http://dhis2:8080/api/routes
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/nehr-route.json http://dhis2:8080/api/routes
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/relying-party-service-route.json http://dhis2:8080/api/routes
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/pluginConfig.json http://dhis2:8080/api/dataStore/capture/dataEntryForms
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/personMap.json http://dhis2:8080/api/dataStore/civilRegistryPlugin/personMap
@@ -143,7 +144,8 @@ services:
     volumes:
       - ./config/civil-registry/persons.json:/persons.json:ro
       - ./config/dhis2/roles.json:/roles.json:ro
-      - ./config/dhis2/route.json:/route.json:ro
+      - ./config/dhis2/nehr-route.json:/nehr-route.json:ro
+      - ./config/dhis2/relying-party-service-route.json:/relying-party-service-route.json:ro
       - ./config/dhis2/pluginConfig.json:/pluginConfig.json:ro
       - ./config/dhis2/personMap.json:/personMap.json:ro
       #- ./civil-registry-plugin/build/bundle/:/civil-registry-plugin/:ro

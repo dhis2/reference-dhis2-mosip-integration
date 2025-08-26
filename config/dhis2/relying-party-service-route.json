@@ -1,0 +1,8 @@
+{
+  "name": "Relying Party Service",
+  "code": "relying-party-service",
+  "url": "http://mock-relying-party-service:8888/fetchUserInfo",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
