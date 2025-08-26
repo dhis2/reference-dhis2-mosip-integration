@@ -1,6 +1,7 @@
 const axios = require("axios");
 const jose = require("jose");
-const { ESIGNET_SERVICE_URL, ESIGNET_AUD_URL, CLIENT_ASSERTION_TYPE, CLIENT_PRIVATE_KEY, USERINFO_RESPONSE_TYPE, JWE_USERINFO_PRIVATE_KEY } = require("./config");
+const fs = require("fs");
+const { ESIGNET_SERVICE_URL, ESIGNET_AUD_URL, CLIENT_ASSERTION_TYPE, CLIENT_PRIVATE_KEY, USERINFO_RESPONSE_TYPE, JWE_USERINFO_PRIVATE_KEY, CLIENT_PRIVATE_KEY_PATH } = require("./config");
 
 const baseUrl = ESIGNET_SERVICE_URL.trim();
 const getTokenEndPoint = "/oauth/v2/token";
@@ -78,7 +79,8 @@ const generateSignedJwt = async (clientId) => {
     aud: ESIGNET_AUD_URL,
   };
 
-  var decodeKey = Buffer.from(CLIENT_PRIVATE_KEY, 'base64')?.toString();
+  const decodeKey = fs.readFileSync(CLIENT_PRIVATE_KEY_PATH, 'utf-8');
+  // var decodeKey = Buffer.from(CLIENT_PRIVATE_KEY, 'base64')?.toString();
   const jwkObject = JSON.parse(decodeKey);
   const privateKey = await jose.importJWK(jwkObject, alg);
   // var privateKey = await jose.importPKCS8(CLIENT_PRIVATE_KEY, alg);
@@ -120,7 +122,7 @@ const decodeUserInfoResponse = async (userInfoResponse) => {
       }
     }
   }
-  console.log("userInfoResponse", response);
+  // console.log("userInfoResponse", response);
   return await new jose.decodeJwt(response);
 };
 

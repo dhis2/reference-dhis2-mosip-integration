@@ -1,5 +1,5 @@
 const _env_ = {
-    CLIENT_ID: 'IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAihRRW',
+    CLIENT_ID: 'IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArLeYj',
     ESIGNET_UI_BASE_URL: 'http://localhost:4000',
     REDIRECT_URI: 'http://localhost:3000/#userInfo',
     // todo
