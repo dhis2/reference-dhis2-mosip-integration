@@ -5,6 +5,7 @@ import { Link, useSearchParams } from 'react-router'
 import clientDetails from './clientDetails'
 
 const esignetRouteMutation = {
+    // Use relying-part-service-local for testing
     resource: 'routes/relying-party-service/run',
     type: 'create',
     data: ({ data }) => ({ ...data }),
