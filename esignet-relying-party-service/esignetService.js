@@ -1,7 +1,14 @@
 const axios = require("axios");
 const jose = require("jose");
 const fs = require("fs");
-const { ESIGNET_SERVICE_URL, ESIGNET_AUD_URL, CLIENT_ASSERTION_TYPE, CLIENT_PRIVATE_KEY, USERINFO_RESPONSE_TYPE, JWE_USERINFO_PRIVATE_KEY, CLIENT_PRIVATE_KEY_PATH } = require("./config");
+const {
+  ESIGNET_SERVICE_URL,
+  ESIGNET_AUD_URL,
+  CLIENT_ASSERTION_TYPE,
+  CLIENT_PRIVATE_KEY,
+  USERINFO_RESPONSE_TYPE,
+  JWE_USERINFO_PRIVATE_KEY,
+} = require("./config");
 
 const baseUrl = ESIGNET_SERVICE_URL.trim();
 const getTokenEndPoint = "/oauth/v2/token";
@@ -19,12 +26,7 @@ const expirationTime = "1h";
  * @param {string} grant_type grant_type
  * @returns access token
  */
-const post_GetToken = async ({
-  code,
-  client_id,
-  redirect_uri,
-  grant_type
-}) => {
+const post_GetToken = async ({ code, client_id, redirect_uri, grant_type }) => {
   let request = new URLSearchParams({
     code: code,
     client_id: client_id,
@@ -34,14 +36,11 @@ const post_GetToken = async ({
     client_assertion: await generateSignedJwt(client_id),
   });
   const endpoint = baseUrl + getTokenEndPoint;
-  console.log(baseUrl)
-  console.log(endpoint)
   const response = await axios.post(endpoint, request, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   });
-  console.log(response.data)
   return response.data;
 };
 
@@ -79,8 +78,7 @@ const generateSignedJwt = async (clientId) => {
     aud: ESIGNET_AUD_URL,
   };
 
-  const decodeKey = fs.readFileSync(CLIENT_PRIVATE_KEY_PATH, 'utf-8');
-  // var decodeKey = Buffer.from(CLIENT_PRIVATE_KEY, 'base64')?.toString();
+  var decodeKey = Buffer.from(CLIENT_PRIVATE_KEY, "base64")?.toString();
   const jwkObject = JSON.parse(decodeKey);
   const privateKey = await jose.importJWK(jwkObject, alg);
   // var privateKey = await jose.importPKCS8(CLIENT_PRIVATE_KEY, alg);
@@ -88,7 +86,7 @@ const generateSignedJwt = async (clientId) => {
   const jwt = new jose.SignJWT(payload)
     .setProtectedHeader(header)
     .setIssuedAt()
-    .setJti(Math.random().toString(36).substring(2,7))
+    .setJti(Math.random().toString(36).substring(2, 7))
     .setExpirationTime(expirationTime)
     .sign(privateKey);
 
@@ -101,28 +99,36 @@ const generateSignedJwt = async (clientId) => {
  * @returns decrypted/decoded json user information
  */
 const decodeUserInfoResponse = async (userInfoResponse) => {
-
   let response = userInfoResponse;
 
   if (USERINFO_RESPONSE_TYPE.toLowerCase() === "jwe") {
-    var decodeKey = Buffer.from(JWE_USERINFO_PRIVATE_KEY, 'base64')?.toString();
+    var decodeKey = Buffer.from(JWE_USERINFO_PRIVATE_KEY, "base64")?.toString();
     const jwkObject = JSON.parse(decodeKey);
     const privateKeyObj = await jose.importJWK(jwkObject, jweEncryAlgo);
 
     try {
-      const { plaintext, protectedHeader } = await jose.compactDecrypt(response, privateKeyObj)
+      const { plaintext, protectedHeader } = await jose.compactDecrypt(
+        response,
+        privateKeyObj
+      );
       response = new TextDecoder().decode(plaintext);
     } catch (error) {
       try {
-        const { plaintext } = await jose.flattenedDecrypt(response, privateKeyObj)
+        const { plaintext } = await jose.flattenedDecrypt(
+          response,
+          privateKeyObj
+        );
         response = new TextDecoder().decode(plaintext);
       } catch (error) {
-        const { plaintext } = await jose.generalDecrypt(response, privateKeyObj)
+        const { plaintext } = await jose.generalDecrypt(
+          response,
+          privateKeyObj
+        );
         response = new TextDecoder().decode(plaintext);
       }
     }
   }
-  // console.log("userInfoResponse", response);
+  console.log("userInfoResponse", response);
   return await new jose.decodeJwt(response);
 };
 
