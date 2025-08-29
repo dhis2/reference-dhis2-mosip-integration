@@ -8299,6 +8299,15 @@ post-robot@^10.0.46:
     universal-serialize "^1.0.4"
     zalgo-promise "^1.0.3"
 
+post-robot@^8.0.32:
+  version "8.0.32"
+  resolved "https://registry.yarnpkg.com/post-robot/-/post-robot-8.0.32.tgz#ce7b03225144bb321909b3ea1c184da3a7d34be0"
+  integrity sha512-PMOdDAt3pyuKUxZcTzdcXXFxLqkdeLpRlcCQl7QAJpI+e7J1YHH+PfC7KAbcL8hRVQ1LknQYGoirbA1/eO/a1g==
+  dependencies:
+    cross-domain-safe-weakmap "^1.0.1"
+    cross-domain-utils "^2.0.0"
+    zalgo-promise "^1.0.3"
+
 postcss-modules-extract-imports@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/postcss-modules-extract-imports/-/postcss-modules-extract-imports-3.1.0.tgz#b4497cb85a9c0c4b5aabeb759bb25e8d89f15002"

@@ -46,7 +46,5 @@ export const LoginButton: FC = () => {
         }
     }, [renderSignInButton, scriptState])
 
-    console.log({ script: window.SignInWithEsignetButton })
-
     return <div id="sign-in-with-esignet" />
 }

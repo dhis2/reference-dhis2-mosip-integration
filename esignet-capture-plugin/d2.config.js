@@ -3,6 +3,7 @@ const config = {
 
     entryPoints: {
         app: './src/App.tsx',
+        plugin: './src/Plugin.tsx',
     },
 }
 
