@@ -1,3 +1,5 @@
+/** This file is copied in from Mock Relying Party UI */
+
 import { useEffect, useState } from 'react'
 
 export const useExternalScript = (url: string) => {
