@@ -87,24 +87,25 @@ const claims = {
         email: {
             essential: true,
         },
-        individual_id: {
+        phone_number: {
             essential: true,
         },
-        phone_number: {
-            essential: false,
-        },
-        picture: {
-            essential: false,
-        },
-        gender: {
-            essential: false,
-        },
         birthdate: {
-            essential: false,
+            essential: true,
         },
         address: {
-            essential: false,
+            essential: true,
         },
+        // Doesn't seem to work
+        // individual_id: {
+        //     essential: true,
+        // },
+        // picture: {
+        //     essential: false,
+        // },
+        // gender: {
+        //     essential: false,
+        // },
     },
     id_token: {},
 }

@@ -15,7 +15,7 @@ const esignetRouteMutation = {
 }
 
 const url =
-    'http://localhost:4000/authorize?nonce=zxy4c9ubagcwi8uf&state=eree2311&client_id=IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArLeYj&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fplugin.html%23userInfo&scope=openid%20profile%20resident-service&response_type=code&acr_values=mosip:idp:acr:generated-code%20mosip:idp:acr:biometrics%20mosip:idp:acr:static-code&claims=%7B%22userinfo%22:%7B%22name%22:%7B%22essential%22:true%7D,%22email%22:%7B%22essential%22:true%7D,%22individual_id%22:%7B%22essential%22:true%7D,%22phone_number%22:%7B%22essential%22:false%7D,%22picture%22:%7B%22essential%22:false%7D,%22gender%22:%7B%22essential%22:false%7D,%22birthdate%22:%7B%22essential%22:false%7D,%22address%22:%7B%22essential%22:false%7D%7D,%22id_token%22:%7B%7D%7D&claims_locales=en&display=page&prompt=consent&max_age=21'
+    'http://localhost:4000/authorize?nonce=v29pwszftvx4pwso&state=eree2311&client_id=IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArLeYj&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fplugin.html%23userInfo&scope=openid%20profile%20resident-service&response_type=code&acr_values=mosip:idp:acr:generated-code%20mosip:idp:acr:biometrics%20mosip:idp:acr:static-code&claims=%7B%22userinfo%22:%7B%22name%22:%7B%22essential%22:true%7D,%22email%22:%7B%22essential%22:true%7D,%22phone_number%22:%7B%22essential%22:true%7D,%22birthdate%22:%7B%22essential%22:true%7D,%22address%22:%7B%22essential%22:true%7D%7D,%22id_token%22:%7B%7D%7D&claims_locales=en&display=page&prompt=consent&max_age=21'
 
 const handleClick = (/* event */) => {
     // todo: Position window
