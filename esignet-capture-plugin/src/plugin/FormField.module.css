@@ -15,19 +15,13 @@
 
 .label {
     font-size: 14px;
-    color: rgba(0, 0, 0, 0.87) !important; 
+    color: rgba(0, 0, 0, 0.87) !important;
 }
 
-.inputContainer {
+.buttonContents {
     display: flex;
-    flex-basis: 150px;
-    flex-grow: 1;
-    gap: 4px;
+    gap: 8px;
     align-items: center;
-}
-
-.input {
-    flex-grow: 1;
 }
 
 :global(.app-shell-app) {

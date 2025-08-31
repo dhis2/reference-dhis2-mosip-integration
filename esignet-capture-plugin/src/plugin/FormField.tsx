@@ -8,6 +8,7 @@ import clientDetails from '../clientDetails'
 import { IDataEntryPluginProps } from '../Plugin.types'
 import classes from './FormField.module.css'
 // import { LoginButton } from '../LoginButton'
+import esignetLogo from './esignet-logo.png'
 
 const esignetRouteMutation = {
     resource: 'routes/relying-party-service/run',
@@ -172,10 +173,16 @@ export const FormField: FC = (pluginProps: IDataEntryPluginProps) => {
             </div>
 
             <Button onClick={handleClick} loading={loading}>
-                {i18n.t('Log in')}
+                <div className={classes.buttonContents}>
+                    <img
+                        src={esignetLogo}
+                        width={24}
+                        height={24}
+                        alt={i18n.t('eSignet logo')}
+                    />
+                    {i18n.t('Verify with eSignet')}
+                </div>
             </Button>
-            {/* <LoginButton /> */}
-            {loading && <CircularLoader />}
         </div>
     )
 }
