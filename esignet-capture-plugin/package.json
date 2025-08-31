@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@dhis2/app-runtime": "^3.14.5",
-    "post-robot": "^8.0.32",
+    "@dhis2/ui": "^10.9.0",
+    "post-robot": "^10.0.46",
     "react-router": "^7.8.2"
   }
 }

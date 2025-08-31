@@ -4,6 +4,7 @@ import { HashRouter, Routes, Route, Outlet } from 'react-router'
 import classes from './App.module.css'
 import { HomePage } from './plugin/HomePage'
 import { RedirectHandler } from './plugin/RedirectHandler'
+import { IDataEntryPluginProps } from './Plugin.types'
 
 const Layout: FC = () => (
     <div className={classes.container}>
@@ -11,12 +12,15 @@ const Layout: FC = () => (
     </div>
 )
 
-const Plugin: FC = () => {
+const Plugin: FC = (pluginProps: IDataEntryPluginProps) => {
     return (
         <HashRouter>
             <Routes>
                 <Route element={<Layout />}>
-                    <Route index element={<HomePage />} />
+                    <Route
+                        index
+                        element={<HomePage {...pluginProps} />}
+                    />
                     <Route path={'userInfo'} element={<RedirectHandler />} />
                 </Route>
             </Routes>
