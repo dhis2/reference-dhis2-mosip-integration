@@ -1,11 +1,12 @@
-// import i18n from '@dhis2/d2-i18n'
 import { useDataMutation } from '@dhis2/app-runtime'
-import { Button, CircularLoader } from '@dhis2/ui'
+import i18n from '@dhis2/d2-i18n'
+import { Button, CircularLoader, Label } from '@dhis2/ui'
 import { customAlphabet } from 'nanoid'
 import postRobot from 'post-robot'
 import React, { FC, useCallback, useEffect } from 'react'
 import clientDetails from '../clientDetails'
 import { IDataEntryPluginProps } from '../Plugin.types'
+import classes from './FormField.module.css'
 // import { LoginButton } from '../LoginButton'
 
 const esignetRouteMutation = {
@@ -100,7 +101,7 @@ const nanoid = customAlphabet('ABCDEFGHIJKLMNPQRSTUVWXYZ123456789', 10)
 /** Generate a 10-character ID for patient to keep */
 const generateUniqueId = () => nanoid(10)
 
-export const HomePage: FC = (pluginProps: IDataEntryPluginProps) => {
+export const FormField: FC = (pluginProps: IDataEntryPluginProps) => {
     // todo: Handle mutation error in UI
     const [mutate, { loading }] = useDataMutation(esignetRouteMutation as any)
 
@@ -163,12 +164,18 @@ export const HomePage: FC = (pluginProps: IDataEntryPluginProps) => {
     }, [])
 
     return (
-        <>
+        <div className={classes.fieldContainer}>
+            <div className={classes.labelContainer}>
+                <Label className={classes.label}>
+                    {i18n.t('Verify patient')}
+                </Label>
+            </div>
+
             <Button onClick={handleClick} loading={loading}>
-                Log in
+                {i18n.t('Log in')}
             </Button>
             {/* <LoginButton /> */}
             {loading && <CircularLoader />}
-        </>
+        </div>
     )
 }

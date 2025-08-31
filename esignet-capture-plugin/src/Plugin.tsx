@@ -2,9 +2,10 @@
 import React, { FC } from 'react'
 import { HashRouter, Routes, Route, Outlet } from 'react-router'
 import classes from './App.module.css'
-import { HomePage } from './plugin/HomePage'
+import { FormField } from './plugin/FormField'
 import { RedirectHandler } from './plugin/RedirectHandler'
 import { IDataEntryPluginProps } from './Plugin.types'
+import './locales'
 
 const Layout: FC = () => (
     <div className={classes.container}>
@@ -17,10 +18,7 @@ const Plugin: FC = (pluginProps: IDataEntryPluginProps) => {
         <HashRouter>
             <Routes>
                 <Route element={<Layout />}>
-                    <Route
-                        index
-                        element={<HomePage {...pluginProps} />}
-                    />
+                    <Route index element={<FormField {...pluginProps} />} />
                     <Route path={'userInfo'} element={<RedirectHandler />} />
                 </Route>
             </Routes>
