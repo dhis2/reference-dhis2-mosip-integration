@@ -1,6 +1,7 @@
 // import i18n from '@dhis2/d2-i18n'
 import { useDataMutation } from '@dhis2/app-runtime'
 import { Button, CircularLoader } from '@dhis2/ui'
+import { customAlphabet } from 'nanoid'
 import postRobot from 'post-robot'
 import React, { FC, useCallback, useEffect } from 'react'
 import clientDetails from '../clientDetails'
@@ -56,6 +57,19 @@ const formatAddress = (address: PersonAddress) => {
     ].join('\n')
 }
 
+/**
+ * Values correspond to the enrollment values mapped to the plugin,
+ * e.g. in the Tracker Plugin Configurator app
+ */
+const FIELD_IDS = Object.freeze({
+    ADDRESS: 'address',
+    DATE_OF_BIRTH: 'dateOfBirth',
+    GIVEN_NAME: 'givenName',
+    FAMILY_NAME: 'familyName',
+    PHONE: 'phone',
+    UNIQUE_ID: 'uniqueId',
+})
+
 const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
     // Reformat from 'YYYY/MM/DD' to 'YYYY-MM-DD'
     const dateOfBirth = personInfo.birthdate
@@ -72,14 +86,25 @@ const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
 
     const phone = personInfo.phone_number
 
-    return { address, dateOfBirth, givenName, familyName, phone }
+    return {
+        [FIELD_IDS.ADDRESS]: address,
+        [FIELD_IDS.DATE_OF_BIRTH]: dateOfBirth,
+        [FIELD_IDS.GIVEN_NAME]: givenName,
+        [FIELD_IDS.FAMILY_NAME]: familyName,
+        [FIELD_IDS.PHONE]: phone,
+    }
 }
+
+// Omit 0 and O from possible ID values for readability
+const nanoid = customAlphabet('ABCDEFGHIJKLMNPQRSTUVWXYZ123456789', 10)
+/** Generate a 10-character ID for patient to keep */
+const generateUniqueId = () => nanoid(10)
 
 export const HomePage: FC = (pluginProps: IDataEntryPluginProps) => {
     // todo: Handle mutation error in UI
     const [mutate, { loading }] = useDataMutation(esignetRouteMutation as any)
 
-    const { /* values, */ fieldsMetadata, setFieldValue } = pluginProps
+    const { fieldsMetadata, setFieldValue } = pluginProps
 
     const setFormFields = useCallback(
         (personInfo) => {
@@ -88,10 +113,14 @@ export const HomePage: FC = (pluginProps: IDataEntryPluginProps) => {
             Object.keys(fieldsMetadata).forEach((fieldId) => {
                 if (mappedPersonInfo[fieldId]) {
                     setFieldValue({ fieldId, value: mappedPersonInfo[fieldId] })
+                } else if (fieldId === FIELD_IDS.UNIQUE_ID) {
+                    // Also generate a unique ID (PHN for Sri Lanka) for patient
+                    setFieldValue({
+                        fieldId: FIELD_IDS.UNIQUE_ID,
+                        value: generateUniqueId(),
+                    })
                 }
             })
-
-            // todo: Set PHN
         },
         [fieldsMetadata, setFieldValue]
     )
