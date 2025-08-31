@@ -1,14 +1,14 @@
 import { useDataMutation } from '@dhis2/app-runtime'
 import i18n from '@dhis2/d2-i18n'
-import { Button, CircularLoader, Label } from '@dhis2/ui'
+import { Button, Label } from '@dhis2/ui'
 import { customAlphabet } from 'nanoid'
 import postRobot from 'post-robot'
 import React, { FC, useCallback, useEffect } from 'react'
 import clientDetails from '../clientDetails'
 import { IDataEntryPluginProps } from '../Plugin.types'
+import esignetLogo from './esignet-logo.png'
 import classes from './FormField.module.css'
 // import { LoginButton } from '../LoginButton'
-import esignetLogo from './esignet-logo.png'
 
 const esignetRouteMutation = {
     resource: 'routes/relying-party-service/run',
@@ -39,13 +39,13 @@ type PersonInfo = {
     /** Format: YYYY/MM/DD */
     birthdate: string
     email: string
-    gender: string // todo: not really necessary
+    gender?: string
     iss: string
     /** Full name */
     name: string
     phone_number: string
     /** base64-encoded image */
-    picture: string
+    picture?: string
     sub: string
 }
 
