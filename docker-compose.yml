@@ -1,5 +1,5 @@
 services:
-  dhis2:
+  anc-registry:
     image: "${DHIS2_IMAGE:-dhis2/core:42.1.0}"
     restart: unless-stopped
     volumes:
@@ -7,7 +7,7 @@ services:
     environment:
       JAVA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml"
     depends_on:
-      db:
+      dhis2-db:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1:8080/dhis-web-login/ 2>&1| grep -q 'HTTP.*200'" ]
@@ -18,10 +18,10 @@ services:
     security_opt:
       - no-new-privileges:true
     networks:
-      - default
-      - db
+      - anc-registry
+      - dhis2-db
 
-  db:
+  dhis2-db:
     image: ghcr.io/baosystems/postgis:13-3.4
     volumes:
       - ./db-dump:/docker-entrypoint-initdb.d/:ro
@@ -41,9 +41,9 @@ services:
     security_opt:
       - no-new-privileges:true
     networks:
-      - db
+      - dhis2-db
 
-  gateway:
+  dhis2-reverse-proxy:
     image: nginx
     restart: always
     depends_on:
@@ -52,9 +52,12 @@ services:
     ports:
       - "${DHIS2_PORT:-8080}:80"
     volumes:
-      - ./config/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
     security_opt:
       - no-new-privileges:true
+    networks:
+      - anc-registry
+      - default
 
   nehr:
     image: "hapiproject/hapi:v8.2.0-2-tomcat"
@@ -69,13 +72,17 @@ services:
       interval: 5s
       timeout: 1s
       retries: 5
-    ports:
-      - "8081:8080"
+    security_opt:
+      - no-new-privileges:true
+#    uncomment so that NEHR can be reached from the outside network (for testing)
+#    ports:
+#      - "8081:8080"
     networks:
-      - default
       - nehr
+#    uncomment so that NEHR can be reached from the outside network (for testing)
+#      - default
 
-  identity-provider:
+  authorisation-server:
     image: "quay.io/keycloak/keycloak:25.0.6"
     environment:
       KEYCLOAK_ADMIN: "admin"
@@ -83,7 +90,7 @@ services:
       KC_HEALTH_ENABLED: "true"
 
       # comment KC_HOSTNAME and KC_HOSTNAME_BACKCHANNEL_DYNAMIC to test Keycloak from Docker host
-      KC_HOSTNAME: "http://identity-provider:8080"
+      KC_HOSTNAME: "http://authorisation-server:8080"
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
     healthcheck:
       test:
@@ -96,20 +103,20 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - ./config/identity-provider/nehr-realm.json:/opt/keycloak/data/import/nehr-realm.json:ro
+      - ./config/authorisation-server/nehr-realm.json:/opt/keycloak/data/import/nehr-realm.json:ro
     command: [ "start-dev", "--import-realm" ]
     security_opt:
       - no-new-privileges:true
     networks:
       - auth
 
-  auth-proxy:
+  nehr-gateway:
     image: "quay.io/oauth2-proxy/oauth2-proxy:v7.6.0"
     command: --config /oauth2-proxy.cfg
     volumes:
-      - "./config/auth-proxy/oauth2-proxy-keycloak.cfg:/oauth2-proxy.cfg"
+      - "./config/nehr-gateway/oauth2-proxy-keycloak.cfg:/oauth2-proxy.cfg"
     depends_on:
-      identity-provider:
+      authorisation-server:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
@@ -121,27 +128,27 @@ services:
     build: ./fhir-sync-agent
     restart: always
     environment:
-      NEHR_URL: http://auth-proxy:4180/fhir
-      OAUTH2_TOKENENDPOINT: http://identity-provider:8080/realms/nehr/protocol/openid-connect/token
+      NEHR_URL: http://nehr-gateway:4180/fhir
+      OAUTH2_TOKENENDPOINT: http://authorisation-server:8080/realms/nehr/protocol/openid-connect/token
       OAUTH2_CLIENTID: nehr-client
       OAUTH2_CLIENTSECRET: ibz2lEXdGe02CJS2N7tY13r6664eJpoX
-      DHIS2DATABASEHOSTNAME: db
+      DHIS2DATABASEHOSTNAME: dhis2-db
       DHIS2DATABASEPORT: 5432
       DHIS2DATABASEUSER: dhis
       DHIS2DATABASEPASSWORD: dhis
       DHIS2DATABASEDBNAME: dhis
-      DHIS2APIURL: http://gateway/api
+      DHIS2APIURL: http://dhis2-reverse-proxy/api
       DHIS2APIUSERNAME: admin
       DHIS2APIPASSWORD: district
     depends_on:
-      identity-provider:
+      authorisation-server:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
     networks:
-      - default
       - auth
-      - db
+      - anc-registry
+      - dhis2-db
 
   seed:
     image: curlimages/curl
@@ -149,14 +156,14 @@ services:
       - "/bin/sh"
       - "-c"
       - |
-        curl -X PATCH -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/roles.json http://dhis2:8080/userRoles/yrB6vc5Ip3r
-        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/relying-party-service-route.json http://dhis2:8080/api/routes
-        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/pluginConfig.json http://dhis2:8080/api/dataStore/capture/dataEntryForms
-        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614
-        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/personMap.json http://dhis2:8080/api/dataStore/civilRegistryPlugin/personMap
+        curl -X PATCH -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/roles.json http://anc-registry:8080/userRoles/yrB6vc5Ip3r
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/relying-party-service-route.json http://anc-registry:8080/api/routes
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/pluginConfig.json http://anc-registry:8080/api/dataStore/capture/dataEntryForms
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://anc-registry:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/personMap.json http://anc-registry:8080/api/dataStore/civilRegistryPlugin/personMap
 
-      # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://dhis2:8080/api/apps'
-      # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://dhis2:8080/api/apps'
+      # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://anc-registry:8080/api/apps'
+      # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://anc-registry:8080/api/apps'
     volumes:
       - ./config/dhis2/roles.json:/roles.json:ro
       - ./config/dhis2/relying-party-service-route.json:/relying-party-service-route.json:ro
@@ -167,10 +174,12 @@ services:
     depends_on:
       nehr:
         condition: service_healthy
-      dhis2:
+      anc-registry:
         condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
     networks:
-      - default
+      - anc-registry
       - nehr
 
   mock-relying-party-service:
@@ -180,6 +189,8 @@ services:
       - 8888:8888
     environment:
       - ESIGNET_SERVICE_URL=http://esignet/v1/esignet
+    security_opt:
+      - no-new-privileges:true
     depends_on:
       esignet:
         condition: service_healthy
@@ -196,5 +207,7 @@ networks:
     internal: true
   auth:
     internal: true
-  db:
+  dhis2-db:
+    internal: true
+  anc-registry:
     internal: true
