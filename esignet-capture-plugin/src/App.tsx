@@ -2,7 +2,7 @@
 import React, { FC } from 'react'
 import { HashRouter, Routes, Route, Outlet } from 'react-router'
 import classes from './App.module.css'
-import { LoginButton } from './LoginButton'
+import { LoginButton } from './AppLoginButton'
 import { UserInfo } from './UserInfo'
 
 const Layout: FC = () => (

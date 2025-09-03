@@ -6,8 +6,7 @@ import React, { useCallback, useEffect } from 'react'
 import clientDetails from '../clientDetails'
 import { IDataEntryPluginProps } from '../Plugin.types'
 import classes from './FormField.module.css'
-import { LoginButton } from './LoginButton'
-// import { LoginButton } from '../LoginButton'
+import { LoginButton } from './PluginLoginButton'
 
 const esignetRouteMutation = {
     resource: 'routes/relying-party-service/run',
