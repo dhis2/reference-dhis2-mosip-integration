@@ -63,7 +63,7 @@ services:
     image: "hapiproject/hapi:v8.2.0-2-tomcat"
     volumes:
       - ./config/ehr/hapi.application.yaml:/data/hapi/application.yaml:ro
-      - ./config/ehr/ips-package.tgz:/package.tgz:ro
+      - ./config/ehr/nehr-ips-package.tgz:/package.tgz:ro
     environment:
       SPRING_CONFIG_LOCATION: file:///data/hapi/application.yaml
     healthcheck:
