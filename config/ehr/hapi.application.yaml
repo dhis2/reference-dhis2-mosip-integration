@@ -82,6 +82,9 @@ spring:
 #      hibernate.search.backend.analysis.configurer: ca.uhn.fhir.jpa.search.HapiHSearchAnalysisConfigurers$HapiElasticAnalysisConfigurer
 hapi:
   fhir:
+    validation:
+      enabled: true
+      requests_enabled: false
     ### This flag when enabled to true, will avail evaluate measure operations from CR Module.
     ### Flag is false by default, can be passed as command line argument to override.
     cr:
@@ -161,8 +164,10 @@ hapi:
     implementationguides:
       ips:
         packageUrl: file:///package.tgz
-        name: hl7.fhir.uv.ips
-        version: 2.0.0
+        name: lk-nehr-fhir-ips.r4
+        version: 0.1.0
+        installMode: STORE_AND_INSTALL
+        validate_resource_status_for_package_upload: false
     ###    example from registry (packages.fhir.org)
     #  swiss:
     #    name: swiss.mednet.fhir
@@ -322,8 +327,9 @@ hapi:
         server_address: "http://hapi.fhir.org/baseR4"
         refuse_to_fetch_third_party_urls: false
         fhir_version: R4
-    #    validation:
-    #      requests_enabled: true
+        validation:
+          enabled: true
+          requests_enabled: true
     #      responses_enabled: true
     #    binary_storage_enabled: true
     inline_resource_storage_below_size: 4000
