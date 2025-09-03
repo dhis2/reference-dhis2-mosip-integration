@@ -1,26 +1,18 @@
 import { useDataMutation } from '@dhis2/app-runtime'
 import i18n from '@dhis2/d2-i18n'
-import { Button, Label } from '@dhis2/ui'
+import { Label } from '@dhis2/ui'
 import postRobot from 'post-robot'
-import React, { FC, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import clientDetails from '../clientDetails'
 import { IDataEntryPluginProps } from '../Plugin.types'
-import esignetLogo from './esignet-logo.png'
 import classes from './FormField.module.css'
+import { LoginButton } from './LoginButton'
 // import { LoginButton } from '../LoginButton'
 
 const esignetRouteMutation = {
     resource: 'routes/relying-party-service/run',
     type: 'create',
     data: ({ data }) => ({ ...data }),
-}
-
-const url =
-    'http://localhost:4000/authorize?nonce=v29pwszftvx4pwso&state=eree2311&client_id=IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArLeYj&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fplugin.html%23userInfo&scope=openid%20profile%20resident-service&response_type=code&acr_values=mosip:idp:acr:generated-code%20mosip:idp:acr:biometrics%20mosip:idp:acr:static-code&claims=%7B%22userinfo%22:%7B%22name%22:%7B%22essential%22:true%7D,%22email%22:%7B%22essential%22:true%7D,%22phone_number%22:%7B%22essential%22:true%7D,%22birthdate%22:%7B%22essential%22:true%7D,%22address%22:%7B%22essential%22:true%7D%7D,%22id_token%22:%7B%7D%7D&claims_locales=en&display=page&prompt=consent&max_age=21'
-
-const handleClick = (/* event */) => {
-    // todo: Position window
-    window.open(url, 'esignetLogin', 'popup=true,height=850,width=800')
 }
 
 type PersonAddress = {
@@ -100,7 +92,7 @@ const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
     }
 }
 
-export const FormField: FC = (pluginProps: IDataEntryPluginProps) => {
+export const FormField = (pluginProps: IDataEntryPluginProps) => {
     // todo: Handle mutation error in UI
     const [mutate, { loading }] = useDataMutation(esignetRouteMutation as any)
 
@@ -164,17 +156,7 @@ export const FormField: FC = (pluginProps: IDataEntryPluginProps) => {
                 </Label>
             </div>
 
-            <Button onClick={handleClick} loading={loading}>
-                <div className={classes.buttonContents}>
-                    <img
-                        src={esignetLogo}
-                        width={24}
-                        height={24}
-                        alt={i18n.t('eSignet logo')}
-                    />
-                    {i18n.t('Verify with eSignet')}
-                </div>
-            </Button>
+            <LoginButton loading={loading} />
         </div>
     )
 }
