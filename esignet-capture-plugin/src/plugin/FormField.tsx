@@ -1,7 +1,6 @@
 import { useDataMutation } from '@dhis2/app-runtime'
 import i18n from '@dhis2/d2-i18n'
 import { Button, Label } from '@dhis2/ui'
-import { customAlphabet } from 'nanoid'
 import postRobot from 'post-robot'
 import React, { FC, useCallback, useEffect } from 'react'
 import clientDetails from '../clientDetails'
@@ -72,6 +71,7 @@ const FIELD_IDS = Object.freeze({
     UNIQUE_ID: 'uniqueId',
 })
 
+// TODO: Use datastore mapping
 const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
     // Reformat from 'YYYY/MM/DD' to 'YYYY-MM-DD'
     const dateOfBirth = personInfo.birthdate
@@ -88,19 +88,17 @@ const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
 
     const phone = personInfo.phone_number
 
+    const uniqueId = personInfo.sub
+
     return {
         [FIELD_IDS.ADDRESS]: address,
         [FIELD_IDS.DATE_OF_BIRTH]: dateOfBirth,
         [FIELD_IDS.GIVEN_NAME]: givenName,
         [FIELD_IDS.FAMILY_NAME]: familyName,
         [FIELD_IDS.PHONE]: phone,
+        [FIELD_IDS.UNIQUE_ID]: uniqueId,
     }
 }
-
-// Omit 0 and O from possible ID values for readability
-const nanoid = customAlphabet('ABCDEFGHIJKLMNPQRSTUVWXYZ123456789', 10)
-/** Generate a 10-character ID for patient to keep */
-const generateUniqueId = () => nanoid(10)
 
 export const FormField: FC = (pluginProps: IDataEntryPluginProps) => {
     // todo: Handle mutation error in UI
@@ -115,12 +113,6 @@ export const FormField: FC = (pluginProps: IDataEntryPluginProps) => {
             Object.keys(fieldsMetadata).forEach((fieldId) => {
                 if (mappedPersonInfo[fieldId]) {
                     setFieldValue({ fieldId, value: mappedPersonInfo[fieldId] })
-                } else if (fieldId === FIELD_IDS.UNIQUE_ID) {
-                    // Also generate a unique ID (PHN for Sri Lanka) for patient
-                    setFieldValue({
-                        fieldId: FIELD_IDS.UNIQUE_ID,
-                        value: generateUniqueId(),
-                    })
                 }
             })
         },
