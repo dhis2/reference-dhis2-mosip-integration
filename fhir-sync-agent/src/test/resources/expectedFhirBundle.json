@@ -6,77 +6,114 @@
       "fullUrl": "urn:uuid:ff991a8e-db1c-dfe2-e5b1-e411451eb602",
       "resource": {
         "resourceType": "Patient",
-        "meta": [
-          {
-            "profile": "http://fhir.health.gov.lk/ips/StructureDefinition/ips-patient"
-          }
-        ],
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips"
+          ]
+        },
         "identifier": [
           {
-            "use": "official",
-            "type": {
-              "coding": [
-                {
-                  "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
-                  "code": "PHN",
-                  "display": "Personal Health Number"
-                }
-              ],
-              "text": "Personal Health Number"
-            },
-            "system": "http://fhir.health.gov.lk/ips/identifier/phn",
-            "value": "12345678"
-          },
-          {
-            "use": "secondary",
-            "type": {
-              "coding": [
-                {
-                  "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
-                  "code": "NIC",
-                  "display": "National Identity Card"
-                }
-              ],
-              "text": "National identity number"
-            },
-            "system": "http://fhir.health.gov.lk/ips/identifier/nic",
-            "value": "200012345678"
-          },
-          {
-            "use": "secondary",
-            "system": "urn:dhis2:anc:regno",
-            "value": "ANC00000001"
+            "system": "urn:dhis2:anc:uniqueId",
+            "value": "8879798"
           }
         ],
         "name": [
           {
-            "text": "John A. B. C. Doe",
-            "given": ["John","A.", "B.", "C."],
-            "family": "Doe"
+            "family": "Doe",
+            "given": [
+              "John"
+            ]
           }
         ],
-        "telecom": [
+        "contact": [
           {
-            "system": "phone",
-            "value": "+94712345678"
+            "name": {
+              "text": "Extended family"
+            },
+            "relationship": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                    "code": "EXT",
+                    "display": "extended family member"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "relationship": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                    "code": "FRND",
+                    "display": "unrelated friend"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "relationship": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                    "code": "PRN",
+                    "display": "parent"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "relationship": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                    "code": "DOMPART",
+                    "display": "domestic partner"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "relationship": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                    "code": "SIB",
+                    "display": "sibling"
+                  }
+                ]
+              }
+            ]
           }
         ],
         "gender": "female",
-        "birthDate": "1997-08-01",
-        "address": [
-          {
-            "line": ["123 Main Street"],
-            "postalCode": "1234",
-            "city": "Akurana",
-            "district": "Kandy",
-            "state": "Central Province",
-            "country": "LK"
-          }
-        ]
+        "birthDate": "1990-04-05",
+        "address": null
       },
       "request": {
         "method": "PUT",
-        "url": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678"
+        "url": "Patient?identifier=urn:dhis2:anc:uniqueId|8879798"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Consent",
+        "patient": {
+          "reference": "urn:uuid:ff991a8e-db1c-dfe2-e5b1-e411451eb602"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent?patient.identifier=urn:dhis2:anc:uniqueId|8879798"
       }
     }
   ]
