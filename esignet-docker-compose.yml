@@ -31,8 +31,9 @@ services:
       - MOSIP_ESIGNET_HOST=localhost:8088
     healthcheck:
       test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8082" ]
+      start_period: 120s
       interval: 5s
-      retries: 5
+      retries: 20
     depends_on:
       - esignet-db
 
@@ -55,8 +56,9 @@ services:
       - SPRING_AUTOCONFIGURE_EXCLUDE=org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
     healthcheck:
       test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8088" ]
+      start_period: 120s
       interval: 5s
-      retries: 10
+      retries: 20
     depends_on:
       - esignet-db
       - mock-identity-system

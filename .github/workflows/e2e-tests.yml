@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: End-to-End Tests
 on:
   push:
     branches: [ main ]
@@ -22,9 +22,9 @@ jobs:
           cache: maven
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Build fhir-sync-agent component
-        run: yarn build-fhir-sync-agent
-      - uses: hoverkraft-tech/compose-action@v2.0.1
+      - name: Build
+        run: yarn build
+      - run: docker compose -f esignet-docker-compose.yml -f docker-compose.yml up --build -d
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests

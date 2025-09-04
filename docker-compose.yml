@@ -68,7 +68,7 @@ services:
       SPRING_CONFIG_LOCATION: file:///data/hapi/application.yaml
     healthcheck:
       test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8080" ]
-      start_period: 60s
+      start_period: 120s
       interval: 5s
       timeout: 1s
       retries: 5
