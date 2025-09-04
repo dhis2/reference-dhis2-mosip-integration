@@ -2,7 +2,7 @@
 import { useDataMutation } from '@dhis2/app-runtime'
 import React, { FC, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import clientDetails from './clientDetails'
+import clientDetails from '../clientDetails'
 
 const esignetRouteMutation = {
     resource: 'routes/relying-party-service/run',

@@ -2,14 +2,16 @@
 import React, { FC } from 'react'
 import { HashRouter, Routes, Route, Outlet } from 'react-router'
 import classes from './App.module.css'
-import { LoginButton } from './AppLoginButton'
-import { UserInfo } from './UserInfo'
+import { LoginButton } from './test-app/AppLoginButton'
+import { UserInfo } from './test-app/UserInfo'
 
 const Layout: FC = () => (
     <div className={classes.container}>
         <Outlet />
     </div>
 )
+
+// Can be used for testing some things outside of the plugin
 
 const MyApp: FC = () => {
     return (

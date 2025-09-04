@@ -1,6 +1,6 @@
 // import i18n from '@dhis2/d2-i18n'
 import React, { FC, useEffect } from 'react'
-import clientDetails from './clientDetails'
+import clientDetails from '../clientDetails'
 import { useExternalScript } from './useExternalScript'
 
 const renderSignInButton = () => {
