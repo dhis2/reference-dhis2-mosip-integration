@@ -19,13 +19,14 @@ services:
       - no-new-privileges:true
     networks:
       - default
-      - middleware
       - db
 
   db:
     image: ghcr.io/baosystems/postgis:13-3.4
     volumes:
       - ./db-dump:/docker-entrypoint-initdb.d/:ro
+      - ./config/dhis2/postgresql.conf:/etc/postgresql.conf
+    command: postgres -c config_file=/etc/postgresql.conf
     environment:
       POSTGRES_USER: dhis
       POSTGRES_DB: dhis
@@ -55,16 +56,24 @@ services:
     security_opt:
       - no-new-privileges:true
 
-  civil-registry:
-    image: "hapiproject/hapi:v7.4.0-tomcat"
+  nehr:
+    image: "hapiproject/hapi:v8.2.0-2-tomcat"
+    volumes:
+      - ./config/nehr/hapi.application.yaml:/data/hapi/application.yaml:ro
+      - ./config/nehr/ips-package.tgz:/package.tgz:ro
+    environment:
+      SPRING_CONFIG_LOCATION: file:///data/hapi/application.yaml
     healthcheck:
       test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8080" ]
       start_period: 60s
       interval: 5s
       timeout: 1s
       retries: 5
+    ports:
+      - "8081:8080"
     networks:
-      - civil-registry
+      - default
+      - nehr
 
   identity-provider:
     image: "quay.io/keycloak/keycloak:25.0.6"
@@ -87,7 +96,7 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - ./config/identity-provider/civil-registry-realm.json:/opt/keycloak/data/import/civil-registry-realm.json:ro
+      - ./config/identity-provider/nehr-realm.json:/opt/keycloak/data/import/nehr-realm.json:ro
     command: [ "start-dev", "--import-realm" ]
     security_opt:
       - no-new-privileges:true
@@ -106,24 +115,33 @@ services:
       - no-new-privileges:true
     networks:
       - auth
-      - civil-registry
+      - nehr
 
-  oauth-route-middleware:
-    build: ./oauth-route-middleware
+  fhir-sync-agent:
+    build: ./fhir-sync-agent
     restart: always
     environment:
-      CIVIL_REGISTRY_URL: http://auth-proxy:4180/fhir
-      OAUTH2_TOKENENDPOINT: http://identity-provider:8080/realms/civil-registry/protocol/openid-connect/token
-      OAUTH2_CLIENTID: civil-registry-client
+      NEHR_URL: http://auth-proxy:4180/fhir
+      OAUTH2_TOKENENDPOINT: http://identity-provider:8080/realms/nehr/protocol/openid-connect/token
+      OAUTH2_CLIENTID: nehr-client
       OAUTH2_CLIENTSECRET: ibz2lEXdGe02CJS2N7tY13r6664eJpoX
+      DHIS2DATABASEHOSTNAME: db
+      DHIS2DATABASEPORT: 5432
+      DHIS2DATABASEUSER: dhis
+      DHIS2DATABASEPASSWORD: dhis
+      DHIS2DATABASEDBNAME: dhis
+      DHIS2APIURL: http://gateway/api
+      DHIS2APIUSERNAME: admin
+      DHIS2APIPASSWORD: district
     depends_on:
       identity-provider:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
     networks:
-      - middleware
+      - default
       - auth
+      - db
 
   seed:
     image: curlimages/curl
@@ -131,9 +149,7 @@ services:
       - "/bin/sh"
       - "-c"
       - |
-        curl -X POST -s --max-time 0 -H "Content-Type: application/json" -d @/persons.json http://civil-registry:8080/fhir
         curl -X PATCH -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/roles.json http://dhis2:8080/userRoles/yrB6vc5Ip3r
-        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/nehr-route.json http://dhis2:8080/api/routes
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/relying-party-service-route.json http://dhis2:8080/api/routes
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/pluginConfig.json http://dhis2:8080/api/dataStore/capture/dataEntryForms
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614
@@ -143,22 +159,20 @@ services:
       # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://dhis2:8080/api/apps'
       # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://dhis2:8080/api/apps'
     volumes:
-      - ./config/civil-registry/persons.json:/persons.json:ro
       - ./config/dhis2/roles.json:/roles.json:ro
-      - ./config/dhis2/nehr-route.json:/nehr-route.json:ro
       - ./config/dhis2/relying-party-service-route.json:/relying-party-service-route.json:ro
       - ./config/dhis2/pluginConfig.json:/pluginConfig.json:ro
       - ./config/dhis2/personMap.json:/personMap.json:ro
       #- ./civil-registry-plugin/build/bundle/:/civil-registry-plugin/:ro
       #- ./route-manager-app/build/bundle/:/route-manager-app/:ro
     depends_on:
-      civil-registry:
+      nehr:
         condition: service_healthy
       dhis2:
         condition: service_healthy
     networks:
       - default
-      - civil-registry
+      - nehr
 
   mock-relying-party-service:
     image: 'mosipid/mock-relying-party-service:0.11.1'
@@ -184,11 +198,9 @@ volumes:
     driver: local
 
 networks:
-  civil-registry:
+  nehr:
     internal: true
   auth:
-    internal: true
-  middleware:
     internal: true
   db:
     internal: true

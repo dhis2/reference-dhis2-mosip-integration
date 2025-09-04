@@ -13,7 +13,7 @@
     "wait-on": "^8.0.1"
   },
   "scripts": {
-    "build-middleware": "mvn -B clean package -Dmaven.test.skip=true -f oauth-route-middleware/pom.xml",
+    "build-fhir-sync-agent": "mvn -B clean package -Dmaven.test.skip=true -f fhir-sync-agent/pom.xml",
     "build-plugin": "cd esignet-capture-plugin && yarn install --frozen-lockfile && yarn build --no-verify",
     "build": "concurrently --kill-others-on-fail \"yarn:build-middleware\" \"yarn:build-plugin\"",
     "deploy": "wait-on http-get://localhost:8080/api/ping && cd esignet-capture-plugin && yarn deploy http://localhost:8080 --username admin --password district",
