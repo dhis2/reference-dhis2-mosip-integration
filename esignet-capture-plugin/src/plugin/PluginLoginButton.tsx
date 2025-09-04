@@ -36,6 +36,7 @@ const handleClick = (/* event */) => {
 }
 
 export const LoginButton = ({ loading }: { loading: boolean }) => {
+    // todo: make into a link button; see advice on https://developer.mozilla.org/en-US/docs/Web/API/Window/open
     return (
         <Button onClick={handleClick} loading={loading}>
             <div className={classes.buttonContents}>
