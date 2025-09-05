@@ -83,7 +83,7 @@ public class AbstractFunctionalTestCase {
             "/package.tgz",
             BindMode.READ_ONLY)
         .withFileSystemBind(
-            "../config/nehr/hapi.application.yaml",
+            "../config/ehr/hapi.application.yaml",
             "/data/hapi/application.yaml",
             BindMode.READ_ONLY)
         .withExposedPorts(8080)
@@ -142,10 +142,10 @@ public class AbstractFunctionalTestCase {
       HAPI_FHIR_CONTAINER.start();
       String fhirServerUrl =
           String.format("http://localhost:%s/fhir", HAPI_FHIR_CONTAINER.getFirstMappedPort());
-      System.setProperty("nehr-url", fhirServerUrl);
+      System.setProperty("ehr-url", fhirServerUrl);
       authorisationServerUrl =
           String.format(
-              "http://localhost:%s/realms/nehr/protocol/openid-connect/token",
+              "http://localhost:%s/realms/ehr/protocol/openid-connect/token",
               TestSocketUtils.findAvailableTcpPort());
       fhirClient = FhirVersionEnum.R4.newContext().newRestfulGenericClient(fhirServerUrl);
 
