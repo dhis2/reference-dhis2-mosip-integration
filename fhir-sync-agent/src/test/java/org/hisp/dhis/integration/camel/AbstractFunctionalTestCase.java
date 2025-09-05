@@ -79,7 +79,7 @@ public class AbstractFunctionalTestCase {
     return new GenericContainer<>(DockerImageName.parse("hapiproject/hapi:v8.2.0-2-tomcat"))
         .withEnv("SPRING_CONFIG_LOCATION", "file:///data/hapi/application.yaml")
         .withFileSystemBind(
-            "../config/ehr/ips-package.tgz",
+            "../config/ehr/nehr-ips-package.tgz",
             "/package.tgz",
             BindMode.READ_ONLY)
         .withFileSystemBind(
@@ -88,7 +88,7 @@ public class AbstractFunctionalTestCase {
             BindMode.READ_ONLY)
         .withExposedPorts(8080)
         .waitingFor(
-            new HttpWaitStrategy().forStatusCode(200).withStartupTimeout(Duration.ofSeconds(120)));
+            new HttpWaitStrategy().forStatusCode(200).withStartupTimeout(Duration.ofSeconds(300)));
   }
 
   private static GenericContainer<?> newDhis2Container() {
