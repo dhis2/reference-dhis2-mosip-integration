@@ -88,7 +88,7 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
                 .process(
                     exchange -> {
                       assertEquals(
-                          "Basic bmVoci1jbGllbnQ6cGFzc3cwcmQ=",
+                          "Basic ZWhyLWNsaWVudDpwYXNzdzByZA==",
                           exchange.getMessage().getHeader("Authorization"));
                       assertEquals(
                           "grant_type=client_credentials",
