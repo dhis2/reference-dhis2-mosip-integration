@@ -1,94 +1,40 @@
+
+local ATTR_FULLNAME = "VQl0wK3eqiw";
+local ATTR_PHONE = "gGAQeOr1Pgu";
+local ATTR_DOB = "Yie7mOY913J";
+local ATTR_GENDER = "p7zizFkC6Lv";
+local ATTR_REGNO = "CSZevH4P5yV";
+local ATTR_NIC = "M6NNPC3hNrb";
+local ATTR_ADDRESS = "EOMGwaUTMrU";
+local ATTR_PHN = "IrUmPkFMDU5";
+
 local getAttrById(attr) = ds.filter(body.enrollments[0].attributes, function(v, i) v.attribute == attr)[0].value default null;
-local getAttrByCode(attr) = ds.filter(body.enrollments[0].attributes, function(v, i) std.get(v, "code", "") == attr)[0].value default null;
+local parseFullName() = 
+  local fullNameAttr = getAttrById("VQl0wK3eqiw");
+  if fullNameAttr == null then []
+  else
+    local fullNameSplit = std.split(fullNameAttr," ");
+    local names = [name for name in fullNameSplit if name!= ""];
+    local n = std.length(names);
+    if n == 0 then []
+    else
+      [{
+        text: fullNameAttr,
+        given: if n > 1 then [names[i] for i in std.range(0, n - 2)] else [],
+        family: names[n-1]
+      }];
 
-local alternativeContact() = {
-  [if getAttrByCode("ANC.A.DE10") != null then "name"]: getAttrByCode("ANC.A.DE10"),
-  [if getAttrByCode("ANC.A.DE11") != null then "telecom"]: {
-    "system": "phone",
-    "value": getAttrByCode("ANC.A.DE11")
-  }
-};
-
-local ancContact() = {
-  [if getAttrByCode("ANC.A.DE12") != null then "telecom"]: {
-    system: "phone",
-    value: getAttrByCode("ANC.A.DE12")
-  }
-};
-
-local extendedFamilyContact() = {
-  name: {
-    text: "Extended family"
-  },
-  relationship: [
-    {
-      coding: [
-        {
-          system : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
-          code: "EXT",
-          display: "extended family member"
-        }
-      ]
-    }
-  ]
-};
-
-local friendContact() = {
-  relationship: [
-    {
-      coding: [
-        {
-          system : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
-          code: "FRND",
-          display: "unrelated friend"
-        }
-      ]
-    }
-  ]
-};
-
-local parentContact() = {
-  relationship: [
-    {
-      coding: [
-        {
-          system : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
-          code: "PRN",
-          display: "parent"
-        }
-      ]
-    }
-  ]
-};
-
-local partnerContact() = {
-  relationship: [
-    {
-      coding: [
-        {
-          system : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
-          code: "DOMPART",
-          display: "domestic partner"
-        }
-      ]
-    }
-  ]
-};
-
-local siblingContact() = {
-  relationship: [
-    {
-      coding: [
-        {
-          system : "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
-          code: "SIB",
-          display: "sibling"
-        }
-      ]
-    }
-  ]
-};
-
+local parseAddress(address) =
+  local addressAttr = std.map(ds.trim, std.split(address, ","));
+  local postalCity = std.map(ds.trim,std.split(addressAttr[1], " "));
+  {
+    line: [ addressAttr[0] ],
+    postalCode: postalCity[0],
+    city: postalCity[1],
+    district: addressAttr[2],
+    state: addressAttr[3],
+    country: if std.length(addressAttr) > 4 then addressAttr[4] else "LK"
+  };
 {
   resourceType: "Bundle",
   type: "transaction",
@@ -96,77 +42,66 @@ local siblingContact() = {
     {
       fullUrl: "urn:uuid:ff991a8e-db1c-dfe2-e5b1-e411451eb602",
       resource: {
-        resourceType : "Patient",
-        meta : {
-          profile : [
-            "http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips"
-          ]
-        },
-        identifier : [
+        resourceType: "Patient",
+        meta: [
           {
-            system : "urn:dhis2:anc:uniqueId",
-            value : getAttrByCode("ANC.A.DE1")
+            profile: "http://fhir.health.gov.lk/ips/StructureDefinition/ips-patient"
           }
         ],
-        name : [
+        identifier: [
           {
-            family : getAttrByCode("FAMILY_NAME"),
-            given : [
-              getAttrByCode("GIVEN_NAME")
-            ]
+            use: "official",
+            type: {
+              coding: [
+                {
+                  system: "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                  code: "PHN",
+                  display: "Personal Health Number"
+                }
+              ],
+              text: "Personal Health Number"
+            },
+            system: "http://fhir.health.gov.lk/ips/identifier/phn",
+            value: getAttrById(ATTR_PHN)
+          },
+          {
+            use: "secondary",
+            type: {
+              coding: [
+                {
+                  system: "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                  code: "NIC",
+                  display: "National Identity Card"
+                }
+              ],
+              text: "National identity number"
+            },
+            system: "http://fhir.health.gov.lk/ips/identifier/nic",
+            value: getAttrById(ATTR_NIC)
+          },
+          {
+            use: "secondary",
+            system: "urn:dhis2:anc:regno",
+            value: getAttrById(ATTR_REGNO)
           }
         ],
-        contact: std.prune([
-            if !ds.isEmpty(alternativeContact())
-            then alternativeContact(),
-            if !ds.isEmpty(ancContact())
-            then ancContact(),
-            if getAttrByCode("ANC.A.DE16") != null && getAttrByCode("ANC.A.DE16") == "true"
-            then extendedFamilyContact(),
-            if getAttrByCode("ANC.A.DE18") != null && getAttrByCode("ANC.A.DE18") == "true"
-            then friendContact(),
-            if getAttrByCode("ANC.A.DE14") != null && getAttrByCode("ANC.A.DE14") == "true"
-            then parentContact(),
-            if getAttrByCode("ANC.A.DE17") != null && getAttrByCode("ANC.A.DE17") == "true"
-            then partnerContact(),
-            if getAttrByCode("ANC.A.DE15") != null && getAttrByCode("ANC.A.DE15") == "true"
-            then siblingContact()
-        ]
-        ),
-        [if getAttrById("ciCR6BBvIT4") != null then "telecom"]: [
+        name: parseFullName(),
+        telecom: [
           {
             system: "phone",
-            value: getAttrById("ciCR6BBvIT4")
+            value: getAttrById(ATTR_PHONE)
           }
         ],
-        gender : "female",
-        birthDate : getAttrByCode("PATINFO_DOB"),
-        address: getAttrByCode("ADDRESS")
-      }, request: {
+        gender: ds.lower(getAttrById(ATTR_GENDER)),
+        birthDate: getAttrById(ATTR_DOB),
+        address: [
+          parseAddress(getAttrById(ATTR_ADDRESS))
+        ],
+      },
+      request: {
         method: "PUT",
-        url: "Patient?identifier=urn:dhis2:anc:uniqueId|" + getAttrByCode("ANC.A.DE1")
-      }
-    }
-  ] + (if getAttrByCode("ANC.A.DE9") != null && getAttrByCode("ANC.A.DE9") == "true"
-       then [
-    {
-      resource: {
-        resourceType : "Consent",
-        patient: {
-          reference: $.entry[0].fullUrl
-        }
-      }, request: {
-        method: "PUT",
-        url: "Consent?patient.identifier=urn:dhis2:anc:uniqueId|" + getAttrByCode("ANC.A.DE1")
+        url: "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|" + getAttrById(ATTR_PHN)
       }
     }
   ]
-       else if (getAttrByCode("ANC.A.DE9") != null && getAttrByCode("ANC.A.DE9") == "false") then [
-    {
-      request: {
-        method: "DELETE",
-        url: "Consent?patient.identifier=urn:dhis2:anc:uniqueId|" + getAttrByCode("ANC.A.DE1")
-      }
-    }
-  ]         else [])
 }

@@ -73,7 +73,7 @@
       uri: direct:fetchTrackedEntity
       steps:
         - toD:
-            description: Fetches the org unit from the source DHIS2 server.
+            description: Fetches the tracked entity from the source DHIS2 server.
             uri: dhis2:get/resource
             parameters:
               path: tracker/trackedEntities/${body.get('uid')}
