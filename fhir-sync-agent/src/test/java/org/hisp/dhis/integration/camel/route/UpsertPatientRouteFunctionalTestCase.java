@@ -30,8 +30,6 @@
 package org.hisp.dhis.integration.camel.route;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -129,23 +127,24 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
     camelContext.start();
 
     String orgUnit = "Tnl7qgZh7zL";
-    TrackedEntityInfo trackedEntity = new TrackedEntityInfo()
-        .withOrgUnit(orgUnit)
-        .withTrackedEntityType("MxdEsVAegt5")
-        .withAttributes(List.of(
-            new AttributeInfo().withAttribute("VQl0wK3eqiw").withValue("Jane Doe"),
-            new AttributeInfo().withAttribute("CSZevH4P5yV").withValue("ANC00000002"),
-            new AttributeInfo().withAttribute("M6NNPC3hNrb").withValue("200012345679"),
-            new AttributeInfo().withAttribute("p7zizFkC6Lv").withValue("Female"),
-            new AttributeInfo().withAttribute("IrUmPkFMDU5").withValue("12345678"),
-            new AttributeInfo().withAttribute("u5AESfSOhIG").withValue("28"),
-            new AttributeInfo().withAttribute("Yie7mOY913J").withValue("1997-08-01"),
-            new AttributeInfo().withAttribute("gGAQeOr1Pgu").withValue("+94712345678"),
-            new AttributeInfo().withAttribute("EOMGwaUTMrU").withValue("123 Main Street, 1234 Akurana, Kandy, Central Province, LK")))
-        .withEnrollments(
-            addEnrollment(
-                orgUnit,
-                List.of("LWJcStrI6kM", "GX0z9IXFaso")));
+    TrackedEntityInfo trackedEntity =
+        new TrackedEntityInfo()
+            .withOrgUnit(orgUnit)
+            .withTrackedEntityType("MxdEsVAegt5")
+            .withAttributes(
+                List.of(
+                    new AttributeInfo().withAttribute("VQl0wK3eqiw").withValue("Jane Doe"),
+                    new AttributeInfo().withAttribute("CSZevH4P5yV").withValue("ANC00000002"),
+                    new AttributeInfo().withAttribute("M6NNPC3hNrb").withValue("200012345679"),
+                    new AttributeInfo().withAttribute("p7zizFkC6Lv").withValue("Female"),
+                    new AttributeInfo().withAttribute("IrUmPkFMDU5").withValue("12345678"),
+                    new AttributeInfo().withAttribute("u5AESfSOhIG").withValue("28"),
+                    new AttributeInfo().withAttribute("Yie7mOY913J").withValue("1997-08-01"),
+                    new AttributeInfo().withAttribute("gGAQeOr1Pgu").withValue("+94712345678"),
+                    new AttributeInfo()
+                        .withAttribute("EOMGwaUTMrU")
+                        .withValue("123 Main Street, 1234 Akurana, Kandy, Central Province, LK")))
+            .withEnrollments(addEnrollment(orgUnit, List.of("LWJcStrI6kM", "GX0z9IXFaso")));
 
     dhis2Client
         .post("tracker")
@@ -203,7 +202,9 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
                     new AttributeInfo().withAttribute("Yie7mOY913J").withValue("1997-08-01"),
                     new AttributeInfo().withAttribute("gGAQeOr1Pgu").withValue("+94712345678"),
                     new AttributeInfo().withAttribute("VQl0wK3eqiw").withValue("Joe Doe"),
-                    new AttributeInfo().withAttribute("EOMGwaUTMrU").withValue("123 Main Street, 1234 Akurana, Kandy, Central Province, LK")))
+                    new AttributeInfo()
+                        .withAttribute("EOMGwaUTMrU")
+                        .withValue("123 Main Street, 1234 Akurana, Kandy, Central Province, LK")))
             .withOccurredAt(today)
             .withStatus(EnrollmentInfo.StatusRef.ACTIVE)
             .withEvents(events));
