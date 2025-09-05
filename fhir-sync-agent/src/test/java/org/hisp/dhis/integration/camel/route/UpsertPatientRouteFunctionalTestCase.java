@@ -167,6 +167,7 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
         .toString();
 
     spyEndpoint.assertIsSatisfied(30000);
+
     Bundle patientBundle = (Bundle) fhirClient.search().forResource(Patient.class).execute();
     List<Bundle.BundleEntryComponent> entries = patientBundle.getEntry();
     assertEquals(1, entries.size());
