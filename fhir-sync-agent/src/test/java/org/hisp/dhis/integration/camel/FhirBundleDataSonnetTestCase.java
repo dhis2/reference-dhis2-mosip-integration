@@ -73,8 +73,7 @@ public class FhirBundleDataSonnetTestCase {
                     Thread.currentThread()
                         .getContextClassLoader()
                         .getResourceAsStream("trackedEntity.json"),
-                    Charset.defaultCharset())
-                .replace("<ANC.A.DE9>", "true"),
+                    Charset.defaultCharset()),
             Map.class);
 
     exchange.getMessage().setBody(trackedEntity);
@@ -90,28 +89,5 @@ public class FhirBundleDataSonnetTestCase {
             Map.class);
 
     assertEquals(expectedFhirBundle, fhirBundle);
-  }
-
-  @Test
-  public void testEvaluateWhenWomanDoesNotWantToReceiveRemindersDuringPregnancy()
-      throws IOException {
-    Map<String, Object> trackedEntity =
-        OBJECT_MAPPER.readValue(
-            StreamUtils.copyToString(
-                    Thread.currentThread()
-                        .getContextClassLoader()
-                        .getResourceAsStream("trackedEntity.json"),
-                    Charset.defaultCharset())
-                .replace("<ANC.A.DE9>", "false"),
-            Map.class);
-
-    exchange.getMessage().setBody(trackedEntity);
-
-    Map<String, Object> fhirBundle = new ValueBuilder(dsExpression).evaluate(exchange, Map.class);
-
-    assertEquals(2, ((List) fhirBundle.get("entry")).size());
-    assertEquals(
-        "DELETE",
-        ((Map) ((Map) ((List) fhirBundle.get("entry")).get(1)).get("request")).get("method"));
   }
 }

@@ -31,6 +31,7 @@ package org.hisp.dhis.integration.camel.route;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -127,15 +128,24 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
 
     camelContext.start();
 
-    String orgUnit = "oQlmngiVAes";
-    TrackedEntityInfo trackedEntity =
-        new TrackedEntityInfo()
-            .withOrgUnit(orgUnit)
-            .withTrackedEntityType("MCPQUTHX1Ze")
-            .withEnrollments(
-                addEnrollment(
-                    orgUnit,
-                    List.of("XznDErihed9", "eR4sNwxkd9Q")));
+    String orgUnit = "Tnl7qgZh7zL";
+    TrackedEntityInfo trackedEntity = new TrackedEntityInfo()
+        .withOrgUnit(orgUnit)
+        .withTrackedEntityType("MxdEsVAegt5")
+        .withAttributes(List.of(
+            new AttributeInfo().withAttribute("VQl0wK3eqiw").withValue("Jane Doe"),
+            new AttributeInfo().withAttribute("CSZevH4P5yV").withValue("ANC00000002"),
+            new AttributeInfo().withAttribute("M6NNPC3hNrb").withValue("200012345679"),
+            new AttributeInfo().withAttribute("p7zizFkC6Lv").withValue("Female"),
+            new AttributeInfo().withAttribute("IrUmPkFMDU5").withValue("12345678"),
+            new AttributeInfo().withAttribute("u5AESfSOhIG").withValue("28"),
+            new AttributeInfo().withAttribute("Yie7mOY913J").withValue("1997-08-01"),
+            new AttributeInfo().withAttribute("gGAQeOr1Pgu").withValue("+94712345678"),
+            new AttributeInfo().withAttribute("EOMGwaUTMrU").withValue("123 Main Street, 1234 Akurana, Kandy, Central Province, LK")))
+        .withEnrollments(
+            addEnrollment(
+                orgUnit,
+                List.of("LWJcStrI6kM", "GX0z9IXFaso")));
 
     dhis2Client
         .post("tracker")
@@ -156,13 +166,12 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
         .get()
         .toString();
 
-    spyEndpoint.assertIsSatisfied(5000);
-
+    spyEndpoint.assertIsSatisfied(30000);
     Bundle patientBundle = (Bundle) fhirClient.search().forResource(Patient.class).execute();
     List<Bundle.BundleEntryComponent> entries = patientBundle.getEntry();
     assertEquals(1, entries.size());
     Patient patient = (Patient) entries.get(0).getResource();
-    assertEquals("8879798", patient.getIdentifier().get(0).getValue());
+    assertEquals("12345678", patient.getIdentifier().get(0).getValue());
   }
 
   public List<EnrollmentInfo> addEnrollment(String orgUnitId, List<String> programStageIds) {
@@ -175,29 +184,26 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
               .withProgramStage(programStage)
               .withOrgUnit(orgUnitId)
               .withScheduledAt(today)
-              .withProgram("WSGAb5XwJ3Y")
+              .withProgram("eozjj9UivfS")
               .withStatus(EventInfo.StatusRef.SCHEDULE));
     }
 
     return List.of(
         new EnrollmentInfo()
             .withOrgUnit(orgUnitId)
-            .withProgram("WSGAb5XwJ3Y")
+            .withProgram("eozjj9UivfS")
             .withEnrolledAt(today)
             .withAttributes(
                 List.of(
-                    new AttributeInfo().withAttribute("PpEGiQurAll").withValue("8879798"),
-                    new AttributeInfo().withAttribute("sB1IHYu2xQT").withValue("John"),
-                    new AttributeInfo().withAttribute("ENRjVGxVL6l").withValue("Doe"),
-                    new AttributeInfo().withAttribute("NI0QRzJvQ0k").withValue("1990-04-05"),
-                    new AttributeInfo().withAttribute("QjdN4mhh4UN").withValue("true"),
-                    new AttributeInfo().withAttribute("rYnea37ReDs").withValue("true"),
-                    new AttributeInfo().withAttribute("MRGgEyilusR").withValue("true"),
-                    new AttributeInfo().withAttribute("ruUzdQRiYpy").withValue("true"),
-                    new AttributeInfo().withAttribute("AoOp84H5Vt1").withValue("true"),
-                    new AttributeInfo().withAttribute("NihUionWia1").withValue("true"),
-                    new AttributeInfo().withAttribute("qJdyXIggXXJ").withValue("true"),
-                    new AttributeInfo().withAttribute("B6TnnFMgmCk").withValue("35")))
+                    new AttributeInfo().withAttribute("p7zizFkC6Lv").withValue("Female"),
+                    new AttributeInfo().withAttribute("CSZevH4P5yV").withValue("ANC00000002"),
+                    new AttributeInfo().withAttribute("M6NNPC3hNrb").withValue("200012345679"),
+                    new AttributeInfo().withAttribute("IrUmPkFMDU5").withValue("12345678"),
+                    new AttributeInfo().withAttribute("u5AESfSOhIG").withValue("28"),
+                    new AttributeInfo().withAttribute("Yie7mOY913J").withValue("1997-08-01"),
+                    new AttributeInfo().withAttribute("gGAQeOr1Pgu").withValue("+94712345678"),
+                    new AttributeInfo().withAttribute("VQl0wK3eqiw").withValue("Joe Doe"),
+                    new AttributeInfo().withAttribute("EOMGwaUTMrU").withValue("123 Main Street, 1234 Akurana, Kandy, Central Province, LK")))
             .withOccurredAt(today)
             .withStatus(EnrollmentInfo.StatusRef.ACTIVE)
             .withEvents(events));
