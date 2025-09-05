@@ -43,8 +43,8 @@ services:
     networks:
       - dhis2-db
 
-  dhis2-reverse-proxy:
-    image: nginx
+  reverse-proxy:
+    image: nginx:stable-alpine3.21-slim
     restart: always
     depends_on:
       seed:
@@ -132,7 +132,7 @@ services:
       DHIS2DATABASEUSER: dhis
       DHIS2DATABASEPASSWORD: dhis
       DHIS2DATABASEDBNAME: dhis
-      DHIS2APIURL: http://dhis2-reverse-proxy/api
+      DHIS2APIURL: http://reverse-proxy/api
       DHIS2APIUSERNAME: admin
       DHIS2APIPASSWORD: district
     depends_on:
