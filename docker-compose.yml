@@ -68,19 +68,14 @@ services:
       SPRING_CONFIG_LOCATION: file:///data/hapi/application.yaml
     healthcheck:
       test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8080" ]
-      start_period: 60s
+      start_period: 120s
       interval: 5s
       timeout: 1s
       retries: 5
     security_opt:
       - no-new-privileges:true
-#    uncomment so that EHR can be reached from the outside network (for testing)
-#    ports:
-#      - "8081:8080"
     networks:
       - ehr
-#    uncomment so that EHR can be reached from the outside network (for testing)
-#      - default
 
   authorisation-server:
     image: "quay.io/keycloak/keycloak:25.0.6"
@@ -200,6 +195,9 @@ services:
     depends_on:
       esignet:
         condition: service_healthy
+    networks:
+      - dhis2
+      - default
 
 volumes:
   db-dump: { }

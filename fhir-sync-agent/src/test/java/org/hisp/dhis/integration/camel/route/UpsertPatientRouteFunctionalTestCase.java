@@ -30,7 +30,6 @@
 package org.hisp.dhis.integration.camel.route;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -89,7 +88,7 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
                 .process(
                     exchange -> {
                       assertEquals(
-                          "Basic bmVoci1jbGllbnQ6cGFzc3cwcmQ=",
+                          "Basic ZWhyLWNsaWVudDpwYXNzdzByZA==",
                           exchange.getMessage().getHeader("Authorization"));
                       assertEquals(
                           "grant_type=client_credentials",
