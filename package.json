@@ -14,12 +14,9 @@
   },
   "scripts": {
     "build-fhir-sync-agent": "mvn -B clean package -Dmaven.test.skip=true -f fhir-sync-agent/pom.xml",
-    "build-plugin": "cd civil-registry-plugin && yarn install --frozen-lockfile && yarn build --no-verify",
-    "build-app": "cd route-manager-app && yarn install --frozen-lockfile && yarn build --no-verify",
-    "build": "concurrently --kill-others-on-fail \"yarn:build-fhir-sync-agent\" \"yarn:build-plugin\" \"yarn:build-app\"",
-    "deploy-plugin": "cd civil-registry-plugin && yarn deploy http://localhost:8080 --username admin --password district",
-    "deploy-app": "cd route-manager-app && yarn deploy http://localhost:8080 --username admin --password district",
-    "deploy": "wait-on http-get://localhost:8080/api/ping && yarn deploy-app && yarn deploy-plugin",
+    "build-plugin": "cd esignet-capture-plugin && yarn install --frozen-lockfile && yarn build --no-verify",
+    "build": "concurrently --kill-others-on-fail \"yarn:build-middleware\" \"yarn:build-plugin\"",
+    "deploy": "wait-on http-get://localhost:8080/api/ping && cd esignet-capture-plugin && yarn deploy http://localhost:8080 --username admin --password district",
     "start-services": "docker compose -f esignet-docker-compose.yml -f docker-compose.yml up --build --renew-anon-volumes --force-recreate --remove-orphans",
     "start": "concurrently --kill-others-on-fail \"yarn:start-services\" \"yarn:deploy\"",
     "test": "playwright test"

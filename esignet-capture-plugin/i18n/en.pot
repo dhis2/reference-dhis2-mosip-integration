@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2025-09-03T22:41:27.021Z\n"
+"PO-Revision-Date: 2025-09-03T22:41:27.021Z\n"
+
+msgid "Verify patient"
+msgstr "Verify patient"
+
+msgid "eSignet logo"
+msgstr "eSignet logo"
+
+msgid "Verify with eSignet"
+msgstr "Verify with eSignet"
+
+msgctxt "Application title"
+msgid "__MANIFEST_APP_TITLE"
+msgstr "eSignet verification plugin"
+
+msgctxt "Application description"
+msgid "__MANIFEST_APP_DESCRIPTION"
+msgstr "Plugin for verifying a patient in the Capture app with eSignet"
