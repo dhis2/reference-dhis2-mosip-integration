@@ -24,8 +24,7 @@ test("should successfully run Relying Party Service DHIS2 route",
             });
 
         expect(userInfo.status()).toBe(200);
-        expect((await userInfo.json()).name).toBe(
-            "Siddcreate-oidc-client.jsonharth K Mansour");
+        expect((await userInfo.json()).name).toBe("Siddharth K Mansour");
     });
 
 async function fetchAuthCode(request) {

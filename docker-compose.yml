@@ -200,6 +200,9 @@ services:
     depends_on:
       esignet:
         condition: service_healthy
+    networks:
+      - dhis2
+      - default
 
 volumes:
   db-dump: { }
