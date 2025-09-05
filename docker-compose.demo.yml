@@ -10,4 +10,5 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
   ehr:
     environment:
-      hapi.fhir.server_address: https://mosip.integration.dhis2.org/nehr
+      HAPI_FHIR_TESTER_HOME_SERVER_ADDRESS: "https://mosip.integration.dhis2.org/nehr/fhir"
+      HAPI_FHIR_SERVER_ADDRESS: "https://mosip.integration.dhis2.org/nehr/fhir"
