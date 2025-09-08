@@ -42,16 +42,6 @@ const _env_ = {
     FALLBACK_LANG: '%7B%22label%22%3A%22English%22%2C%22value%22%3A%22en%22%7D',
 }
 
-console.log({
-    _env_,
-    baseUrl: process.env.DHIS2_APP_ESIGNET_UI_BASE_URL,
-    baseUrlMeta: import.meta.env.DHIS2_APP_ESIGNET_UI_BASE_URL,
-    metaEnv: import.meta.env,
-    appNameReact: process.env.REACT_APP_DHIS2_APP_NAME,
-    appNameEnv: process.env.DHIS2_APP_NAME,
-    appNameMeta: import.meta.env.DHIS2_APP_NAME,
-})
-
 // method to check non-empty and non-null
 // values, if present then give default value
 const checkEmptyNullValue = (initialValue, defaultValue) =>
