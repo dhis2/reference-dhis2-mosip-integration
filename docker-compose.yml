@@ -209,6 +209,8 @@ volumes:
     driver: local
 
 networks:
+  dhis2:
+  ehr:
   auth:
     internal: true
   dhis2-db:
