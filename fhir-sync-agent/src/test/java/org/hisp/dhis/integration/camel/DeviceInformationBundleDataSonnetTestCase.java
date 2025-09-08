@@ -41,12 +41,11 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FhirBundleDataSonnetTestCase {
+public class DeviceInformationBundleDataSonnetTestCase {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -55,37 +54,38 @@ public class FhirBundleDataSonnetTestCase {
 
   @BeforeEach
   public void beforeEach() {
-    dsExpression = new DatasonnetExpression("resource:classpath:fhirBundle.ds");
+    dsExpression = new DatasonnetExpression("resource:classpath:deviceInformationBundle.ds");
     dsExpression.setResultType(Map.class);
     dsExpression.setBodyMediaType("application/x-java-object");
     dsExpression.setOutputMediaType("application/x-java-object");
 
     CamelContext camelContext = new DefaultCamelContext();
-
     exchange = new DefaultExchange(camelContext);
   }
 
   @Test
   public void testEvaluate() throws IOException {
-    Map<String, Object> trackedEntity = OBJECT_MAPPER.readValue(
-        StreamUtils.copyToString(
-            Thread.currentThread()
-                .getContextClassLoader()
-                .getResourceAsStream("trackedEntity.json"),
-            Charset.defaultCharset()),
-        Map.class);
+    Map<String, Object> systemInfo =
+        OBJECT_MAPPER.readValue(
+            StreamUtils.copyToString(
+                Thread.currentThread()
+                    .getContextClassLoader()
+                    .getResourceAsStream("systemInfo.json"),
+                Charset.defaultCharset()),
+            Map.class);
 
-    exchange.getMessage().setBody(trackedEntity);
+    exchange.getMessage().setBody(systemInfo);
 
-    Map<String, Object> fhirBundle = new ValueBuilder(dsExpression).evaluate(exchange, Map.class);
-    Map<String, Object> expectedFhirBundle = OBJECT_MAPPER.readValue(
-        StreamUtils.copyToString(
-            Thread.currentThread()
-                .getContextClassLoader()
-                .getResourceAsStream("expectedFhirBundle.json"),
-            Charset.defaultCharset()),
-        Map.class);
+    Map<String, Object> deviceBundle = new ValueBuilder(dsExpression).evaluate(exchange, Map.class);
+    Map<String, Object> expectedDeviceBundle =
+        OBJECT_MAPPER.readValue(
+            StreamUtils.copyToString(
+                Thread.currentThread()
+                    .getContextClassLoader()
+                    .getResourceAsStream("expectedDeviceInformationBundle.json"),
+                Charset.defaultCharset()),
+            Map.class);
 
-    assertEquals(expectedFhirBundle, fhirBundle);
+    assertEquals(expectedDeviceBundle, deviceBundle);
   }
 }
