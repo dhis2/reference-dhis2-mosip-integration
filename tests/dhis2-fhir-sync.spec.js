@@ -80,7 +80,7 @@ test("should successfully sync tracked entity with EHR",
                         "value": "+94712345678"
                     }, {
                         "attribute": "VQl0wK3eqiw",
-                        "value": "Joe Doe"
+                        "value": "Jane Doe"
                     }, {
                         "attribute": "EOMGwaUTMrU",
                         "value": "123 Main Street, 1234 Akurana, Kandy, Central Province, LK"

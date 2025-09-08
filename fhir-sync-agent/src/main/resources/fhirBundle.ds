@@ -1,4 +1,3 @@
-
 local ATTR_FULLNAME = "VQl0wK3eqiw";
 local ATTR_PHONE = "gGAQeOr1Pgu";
 local ATTR_DOB = "Yie7mOY913J";
@@ -46,6 +45,14 @@ local parseAddress(address) =
         meta: [
           {
             profile: "http://fhir.health.gov.lk/ips/StructureDefinition/ips-patient"
+          }
+        ],
+        extension: [
+          {
+            url: "http://fhir.health.gov.lk/ips/StructureDefinition/patient-registration-system",
+            valueReference: {
+              reference: "Device?identifier=http://fhir.health.gov.lk/ips/identifier/system-id|5b21b377-f424-48c1-8c24-1980b4d00059"
+            }
           }
         ],
         identifier: [
