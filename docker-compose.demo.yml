@@ -11,3 +11,5 @@ services:
   ehr:
     ports:
       - "8081:8080"
+    environment:
+      SERVER_ADDRESS: https://mosip.integration.dhis2.org/nehr/
