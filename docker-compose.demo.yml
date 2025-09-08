@@ -10,4 +10,4 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
   ehr:
     environment:
-      HAPI_FHIR_SERVER_ADDRESS: https://mosip.integration.dhis2.org/nehr/
+      HAPI_FHIR_SERVER_ADDRESS: https://mosip.integration.dhis2.org/nehr
