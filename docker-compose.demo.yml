@@ -1,7 +1,7 @@
 services:
   dhis2-db:
     volumes:
-      - dhis2:/var/lib/postgresql/data
+      - dhis2-db:/var/lib/postgresql/data
   reverse-proxy:
     ports:
       - "80:80"
@@ -15,6 +15,10 @@ services:
     environment:
       HAPI_FHIR_TESTER_HOME_SERVER_ADDRESS: "https://mosip.integration.dhis2.org/nehr/fhir"
       HAPI_FHIR_SERVER_ADDRESS: "https://mosip.integration.dhis2.org/nehr/fhir"
+  esignet-db:
+    volumes:
+      - esignet-db:/var/lib/postgresql/data
 
 volumes:
   dhis2-db:
+  esignet-db:
