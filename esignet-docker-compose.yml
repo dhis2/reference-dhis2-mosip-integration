@@ -1,6 +1,6 @@
 services:
   esignet-db:
-    image: 'postgres:bookworm'
+    image: 'postgres:17.6-bookworm'
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -38,6 +38,8 @@ services:
       - esignet-db
     networks:
       - esignet
+    volumes:
+      - ./config/esignet/mock_local.p12:/home/mosip/mock_local.p12
 
   esignet:
     image: 'mosipid/esignet-with-plugins:1.6.1'
@@ -66,6 +68,8 @@ services:
       - redis
     networks:
       - esignet
+    volumes:
+      - ./config/esignet/esignet_local.p12:/home/mosip/esignet_local.p12
 
   esignet-ui:
     image: 'mosipid/oidc-ui:1.6.1'
@@ -121,4 +125,3 @@ services:
 
 networks:
   esignet:
-    internal: true
