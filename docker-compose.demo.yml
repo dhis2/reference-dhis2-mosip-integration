@@ -11,3 +11,5 @@ services:
   ehr:
     environment:
       SERVER_ADDRESS: https://mosip.integration.dhis2.org/nehr
+    networks:
+      - default
