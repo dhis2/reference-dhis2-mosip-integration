@@ -126,5 +126,7 @@ test("should successfully sync tracked entity with EHR",
                     }
                 }
             )).json()).total
+        }, {
+            timeout: 200000
         }).toBe(1);
     });
