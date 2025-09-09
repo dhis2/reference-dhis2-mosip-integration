@@ -2,13 +2,15 @@
 
 // TODO: Clean up this file
 
+const ESIGNET_UI_BASE_URL =
+    process.env.DHIS2_APP_ESIGNET_UI_BASE_URL ?? 'http://localhost:4000'
 const _env_ = {
-    CLIENT_ID: 'IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArLeYj',
-    ESIGNET_UI_BASE_URL:
-        process.env.ESIGNET_UI_BASE_URL ?? 'http://localhost:4000',
-    SIGN_IN_BUTTON_PLUGIN_URL: process.env.ESIGNET_UI_BASE_URL
-        ? process.env.ESIGNET_UI_BASE_URL + '/plugins/sign-in-button-plugin.js'
-        : 'http://localhost:4000/plugins/sign-in-button-plugin.js',
+    CLIENT_ID:
+        process.env.DHIS2_APP_ESIGNET_CLIENT_ID ??
+        'IIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArLeYj',
+    ESIGNET_UI_BASE_URL: ESIGNET_UI_BASE_URL,
+    SIGN_IN_BUTTON_PLUGIN_URL:
+        ESIGNET_UI_BASE_URL + '/plugins/sign-in-button-plugin.js',
 
     // This should work for any location the plugin is running, e.g.
     // 'http://localhost:8080/api/apps/esignet-capture-plugin/plugin.html#userInfo'
