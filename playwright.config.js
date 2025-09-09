@@ -27,7 +27,7 @@ module.exports = defineConfig({
     }, ],
 
     webServer: {
-        command: 'docker compose -f esignet-docker-compose.yml -f docker-compose.yml up --build --renew-anon-volumes --force-recreate --remove-orphans',
+        command: 'docker compose -f esignet-docker-compose.yml -f docker-compose.yml -f tests/docker-compose.test.yml up --build --renew-anon-volumes --force-recreate --remove-orphans',
         url: 'http://localhost:8080',
         stdout: 'pipe',
         stderr: 'pipe',
