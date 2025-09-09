@@ -11,7 +11,6 @@ const FIELD_IDS = Object.freeze({
     UNIQUE_ID: 'uniqueId',
 })
 
-
 type PersonAddress = {
     country: string
     locality: string
