@@ -21,6 +21,8 @@ services:
   esignet-db:
     volumes:
       - esignet-db:/var/lib/postgresql/data
+  mock-relying-party-service:
+    env_file: mock-relying-party-service.env
 
 volumes:
   dhis2-db:
