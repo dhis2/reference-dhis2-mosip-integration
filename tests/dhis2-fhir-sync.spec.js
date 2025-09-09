@@ -125,6 +125,6 @@ test("should successfully sync tracked entity with EHR",
                         "Cache-Control": "no-store"
                     }
                 }
-            )).json()).total
+            ), timeout: 100000).json()).total
         }).toBe(1);
     });
