@@ -30,6 +30,7 @@
 
 - route:
     id: captureChangeRoute
+    startupOrder: 2
     description: Listens for tracked entity changes in the source DHIS2 database.
     from:
       description: |

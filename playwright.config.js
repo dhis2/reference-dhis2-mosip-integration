@@ -33,6 +33,6 @@ module.exports = defineConfig({
         stdout: 'pipe',
         stderr: 'pipe',
         reuseExistingServer: true,
-        timeout: 100000
+        timeout: 300000
     },
 });

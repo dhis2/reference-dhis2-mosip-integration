@@ -50,6 +50,12 @@ services:
     depends_on:
       seed:
         condition: service_completed_successfully
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1/api/system/info 2>&1 | grep -q 'HTTP.*200'" ]
+      start_period: 120s
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - "${DHIS2_PORT:-8080}:80"
     volumes:
@@ -141,6 +147,8 @@ services:
       DHIS2APIPASSWORD: district
     depends_on:
       authorisation-server:
+        condition: service_healthy
+      reverse-proxy:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true

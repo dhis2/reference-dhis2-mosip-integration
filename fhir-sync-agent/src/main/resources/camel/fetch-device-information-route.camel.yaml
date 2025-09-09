@@ -30,10 +30,11 @@
 
 - route:
     id: fetchDeviceInformation
+    startupOrder: 1
     description: |
       Fetches DHIS2 system information at startup and transforms it to a FHIR bundle.
     from:
-      uri: timer:fetchDeviceInfo?repeatCount=1
+      uri: timer:fetchDeviceInformation?repeatCount=1
       description: Triggers once at startup.
       steps:
         - toD:

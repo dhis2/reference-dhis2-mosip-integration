@@ -12,6 +12,16 @@ test.beforeEach(async function({
                 "identifier": "http://fhir.health.gov.lk/ips/identifier/phn|12345678"
             }
         })).status()).toBe(200);
+
+    const dhis2DeleteResponse = await request.delete(
+        "http://localhost:8080/api/trackedEntityInstances/12345678", {
+            headers: {
+                "Authorization": "Basic YWRtaW46ZGlzdHJpY3Q=",
+                "Content-Type": "application/json"
+            }
+        }
+    );
+    expect([200, 204, 404]).toContain(dhis2DeleteResponse.status());
 });
 
 test("should successfully sync tracked entity with EHR",
@@ -25,6 +35,18 @@ test("should successfully sync tracked entity with EHR",
                 }
             }
         )).json()).total).toBe(0)
+
+        await expect.poll(async function() {
+            return (await (await request.get(
+                "http://localhost:8081/fhir/Device?_format=json", {
+                    headers: {
+                        "Cache-Control": "no-store"
+                    }
+                }
+            )).json()).total
+        }, {
+            timeout: 300000
+        }).toBe(1);
 
         const trackedEntity = {
             "trackedEntities": [{
