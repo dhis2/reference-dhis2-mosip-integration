@@ -48,6 +48,7 @@ import org.hisp.dhis.api.model.v40_2_2.EventInfo;
 import org.hisp.dhis.api.model.v40_2_2.TrackedEntityInfo;
 import org.hisp.dhis.api.model.v40_2_2.TrackerImportReport;
 import org.hisp.dhis.integration.camel.AbstractFunctionalTestCase;
+import org.hisp.dhis.integration.camel.util.FhirValidatorUtil;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.AfterEach;
@@ -136,7 +137,7 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
         .execute();
 
     org.hl7.fhir.r4.model.OperationOutcome outcome = (org.hl7.fhir.r4.model.OperationOutcome) resultParams.getParameterFirstRep().getResource();
-    String errorDetails = extractValidationErrors(outcome);
+    String errorDetails = FhirValidatorUtil.extractValidationErrors(outcome);
     boolean hasError = !errorDetails.isEmpty();
   assertEquals(false, hasError, errorDetails);
   }
@@ -174,24 +175,5 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
             .withOccurredAt(today)
             .withStatus(EnrollmentInfo.StatusRef.ACTIVE)
             .withEvents(events));
-  }
-
-  public String extractValidationErrors(org.hl7.fhir.r4.model.OperationOutcome outcome) {
-    StringBuilder errorDetails = new StringBuilder();
-    for (org.hl7.fhir.r4.model.OperationOutcome.OperationOutcomeIssueComponent issue : outcome.getIssue()) {
-      if (issue.getSeverity() == org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity.ERROR ||
-          issue.getSeverity() == org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity.FATAL) {
-  if (errorDetails.isEmpty()) {
-          errorDetails.append("Patient resource is not conformant to Sri Lanka IPS profile:\nFailures:\n");
-        }
-        errorDetails.append(issue.getSeverity().toCode().toUpperCase())
-            .append(": ")
-            .append(issue.getCode().toCode())
-            .append(" - ")
-            .append(issue.getDiagnostics() != null ? issue.getDiagnostics() : "")
-            .append("\n");
-      }
-    }
-    return errorDetails.toString();
   }
 }

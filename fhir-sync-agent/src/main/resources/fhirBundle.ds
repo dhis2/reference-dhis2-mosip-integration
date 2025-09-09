@@ -8,12 +8,12 @@ local ATTR_ADDRESS = "EOMGwaUTMrU";
 local ATTR_PHN = "IrUmPkFMDU5";
 
 local getAttrById(attr) = ds.filter(body.enrollments[0].attributes, function(v, i) v.attribute == attr)[0].value default null;
-local parseFullName() = 
+local parseFullName() =
   local fullNameAttr = getAttrById("VQl0wK3eqiw");
   if fullNameAttr == null then []
   else
-    local fullNameSplit = std.split(fullNameAttr," ");
-    local names = [name for name in fullNameSplit if name!= ""];
+    local fullNameSplit = std.split(fullNameAttr, " ");
+    local names = [name for name in fullNameSplit if name != ""];
     local n = std.length(names);
     if n == 0 then []
     else
@@ -40,7 +40,7 @@ local parseAddress(address) =
   entry: [
     {
       fullUrl: "urn:uuid:ff991a8e-db1c-dfe2-e5b1-e411451eb602",
-      resource: {
+      resource: std.prune({
         resourceType: "Patient",
         meta: [
           {
@@ -71,7 +71,7 @@ local parseAddress(address) =
             system: "http://fhir.health.gov.lk/ips/identifier/phn",
             value: getAttrById(ATTR_PHN)
           },
-          {
+          if getAttrById(ATTR_NIC) != null then {
             use: "secondary",
             type: {
               coding: [
@@ -86,25 +86,25 @@ local parseAddress(address) =
             system: "http://fhir.health.gov.lk/ips/identifier/nic",
             value: getAttrById(ATTR_NIC)
           },
-          {
+          if getAttrById(ATTR_REGNO) != null then {
             use: "secondary",
             system: "urn:dhis2:anc:regno",
             value: getAttrById(ATTR_REGNO)
           }
         ],
         name: parseFullName(),
-        telecom: [
-          {
+        telecom: std.prune([
+          if getAttrById(ATTR_PHONE) != null then {
             system: "phone",
             value: getAttrById(ATTR_PHONE)
           }
-        ],
-        gender: ds.lower(getAttrById(ATTR_GENDER)),
+        ]),
+        gender: if getAttrById(ATTR_GENDER) != null then ds.lower(getAttrById(ATTR_GENDER)) else null,
         birthDate: getAttrById(ATTR_DOB),
-        address: [
-          parseAddress(getAttrById(ATTR_ADDRESS))
-        ],
-      },
+        address: std.prune([
+          if getAttrById(ATTR_ADDRESS) != null then parseAddress(getAttrById(ATTR_ADDRESS))
+        ])
+      }),
       request: {
         method: "PUT",
         url: "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|" + getAttrById(ATTR_PHN)
@@ -112,3 +112,4 @@ local parseAddress(address) =
     }
   ]
 }
+

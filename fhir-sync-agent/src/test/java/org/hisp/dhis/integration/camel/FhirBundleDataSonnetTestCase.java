@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FhirBundleDataSonnetTestCase {
 
@@ -66,7 +67,7 @@ public class FhirBundleDataSonnetTestCase {
   }
 
   @Test
-  public void testEvaluate() throws IOException {
+  public void testCompleteFhirPatientBundleDatasonnetMapping() throws IOException {
     Map<String, Object> trackedEntity = OBJECT_MAPPER.readValue(
         StreamUtils.copyToString(
             Thread.currentThread()
@@ -87,5 +88,34 @@ public class FhirBundleDataSonnetTestCase {
         Map.class);
 
     assertEquals(expectedFhirBundle, fhirBundle);
+  }
+  
+  @Test
+  public void testMinimalFhirPatientBundleDatasonnetMapping() throws IOException {
+    Map<String, Object> minimalTrackedEntity = OBJECT_MAPPER.readValue(
+      StreamUtils.copyToString(
+        Thread.currentThread()
+          .getContextClassLoader()
+          .getResourceAsStream("minimalTrackedEntity.json"),
+        Charset.defaultCharset()),
+      Map.class);
+
+    exchange.getMessage().setBody(minimalTrackedEntity);
+
+    Map<String, Object> fhirBundle = new ValueBuilder(dsExpression).evaluate(exchange, Map.class);
+    List<Map<String, Object>> entries = (List<Map<String, Object>>) fhirBundle.get("entry");
+    Map<String, Object> patient = (Map<String, Object>) entries.get(0).get("resource");
+    
+    List<Map<String, Object>> identifiers = (List<Map<String, Object>>) patient.get("identifier");
+    assertEquals("12345678", identifiers.stream().filter(i -> "http://fhir.health.gov.lk/ips/identifier/phn".equals(i.get("system"))).findFirst().get().get("value"));
+    assertEquals("200012345678", identifiers.stream().filter(i -> "http://fhir.health.gov.lk/ips/identifier/nic".equals(i.get("system"))).findFirst().get().get("value"));
+    assertEquals("ANC00000001", identifiers.stream().filter(i -> "urn:dhis2:anc:regno".equals(i.get("system"))).findFirst().get().get("value"));
+    List<Map<String, Object>> names = (List<Map<String, Object>>) patient.get("name");
+    assertEquals("Jane Doe", names.get(0).get("text"));
+
+    assertTrue(patient.get("gender") == null || patient.get("gender").toString().isEmpty());
+    assertTrue(patient.get("birthDate") == null || patient.get("birthDate").toString().isEmpty());
+    assertTrue(patient.get("telecom") == null || ((List<?>) patient.get("telecom")).isEmpty());
+    assertTrue(patient.get("address") == null || ((List<?>) patient.get("address")).isEmpty());
   }
 }
