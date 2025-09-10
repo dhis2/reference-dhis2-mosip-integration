@@ -58,11 +58,6 @@
             simple: ${headers.CamelDebeziumOperation} != 'd'
         - log: "Capturing database change [${headers}]..."
         - to: direct:fetchTrackedEntity
-        - log: |
-            Mapping body:
-            
-            ${body}
-
         - transform:
             datasonnet:
               outputMediaType: application/json
@@ -88,6 +83,10 @@
               username: ${properties:dhis2ApiUsername:}
               password: ${properties:dhis2ApiPassword:}
               personalAccessToken: ${properties:dhis2ApiPersonalAccessToken:}
+        - log: |
+            Fetched tracked entity =>
+            
+            ${body}
 
 - route:
     id: upsertPatient
