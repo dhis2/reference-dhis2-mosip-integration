@@ -5,10 +5,11 @@
 const FIELD_IDS = Object.freeze({
     ADDRESS: 'address',
     DATE_OF_BIRTH: 'dateOfBirth',
-    GIVEN_NAME: 'givenName',
-    FAMILY_NAME: 'familyName',
+    FULL_NAME: 'fullName',
     PHONE: 'phone',
-    UNIQUE_ID: 'uniqueId',
+    REGISTRATION_NUMBER: 'registrationNumber',
+    GENDER: 'gender',
+    AGE: 'age',
 })
 
 type PersonAddress = {
@@ -57,20 +58,14 @@ export const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
         ? formatAddress(personInfo.address)
         : undefined
 
-    const splitName = personInfo.name.split(' ')
-    const givenName = splitName[0]
-    const familyName = splitName[splitName.length - 1]
-
-    const phone = personInfo.phone_number
-
-    const uniqueId = personInfo.sub
+    // todo: age?
 
     return {
         [FIELD_IDS.ADDRESS]: address,
         [FIELD_IDS.DATE_OF_BIRTH]: dateOfBirth,
-        [FIELD_IDS.GIVEN_NAME]: givenName,
-        [FIELD_IDS.FAMILY_NAME]: familyName,
-        [FIELD_IDS.PHONE]: phone,
-        [FIELD_IDS.UNIQUE_ID]: uniqueId,
+        [FIELD_IDS.FULL_NAME]: personInfo.name,
+        [FIELD_IDS.PHONE]: personInfo.phone_number,
+        [FIELD_IDS.GENDER]: personInfo.gender,
+        [FIELD_IDS.REGISTRATION_NUMBER]: personInfo.sub
     }
 }
