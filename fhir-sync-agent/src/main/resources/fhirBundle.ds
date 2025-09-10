@@ -40,7 +40,7 @@ local postalCity = std.map(ds.trim, std.split(addressAttr[1], " ")) default null
     addressAttr[0]
   ],
   [if postalCity != null then "postalCode"]: postalCity[0],
-  [if postalCity != null then "city"]: postalCity[1],
+  [if postalCity != null && std.length(postalCity) > 1 then "city"]: postalCity[1],
   [if addressAttr != null && std.length(addressAttr) > 2 then "district"]: addressAttr[2],
   [if addressAttr != null && std.length(addressAttr) > 3 then "state"]: addressAttr[3],
   [if addressAttr != null then "country"]: if std.length(addressAttr) > 4 then addressAttr[4] else "LK"
