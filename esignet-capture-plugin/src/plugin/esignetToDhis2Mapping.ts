@@ -60,8 +60,10 @@ export const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
 
     // Rough age calculation
     const yrInMs = 1000 * 60 * 60 * 24 * 365.24
-    const age = Math.floor(
-        (Date.now() - Number(new Date(dateOfBirth))) / yrInMs
+    // This needs to be a string to work with Capture
+    // (otherwise it causes an error)
+    const age = String(
+        Math.floor((Date.now() - Number(new Date(dateOfBirth))) / yrInMs)
     )
 
     return {
