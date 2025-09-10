@@ -23,6 +23,9 @@ services:
       - esignet-db:/var/lib/postgresql/data
   mock-relying-party-service:
     env_file: mock-relying-party-service.env
+  fhir-sync-agent:
+    environment:
+      DHIS2APIURL: https://dhis2:8080/api
 
 volumes:
   dhis2-db:
