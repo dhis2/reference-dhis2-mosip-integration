@@ -25,7 +25,7 @@ services:
     env_file: mock-relying-party-service.env
   fhir-sync-agent:
     environment:
-      DHIS2APIURL: https://dhis2:8080/api
+      DHIS2APIURL: http://dhis2:8080/api
 
 volumes:
   dhis2-db:
