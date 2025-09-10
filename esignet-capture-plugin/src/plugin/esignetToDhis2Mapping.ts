@@ -58,14 +58,19 @@ export const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
         ? formatAddress(personInfo.address)
         : undefined
 
-    // todo: age?
+    // Rough age calculation
+    const yrInMs = 1000 * 60 * 60 * 24 * 365.24
+    const age = Math.floor(
+        (Date.now() - Number(new Date(dateOfBirth))) / yrInMs
+    )
 
     return {
         [FIELD_IDS.ADDRESS]: address,
         [FIELD_IDS.DATE_OF_BIRTH]: dateOfBirth,
+        [FIELD_IDS.AGE]: age,
         [FIELD_IDS.FULL_NAME]: personInfo.name,
         [FIELD_IDS.PHONE]: personInfo.phone_number,
         [FIELD_IDS.GENDER]: personInfo.gender,
-        [FIELD_IDS.REGISTRATION_NUMBER]: personInfo.sub
+        [FIELD_IDS.REGISTRATION_NUMBER]: personInfo.sub,
     }
 }
