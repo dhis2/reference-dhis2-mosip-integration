@@ -9,31 +9,42 @@ local ATTR_PHN = "IrUmPkFMDU5";
 
 local getAttrById(attr) = ds.filter(body.enrollments[0].attributes, function(v, i) v.attribute == attr)[0].value default null;
 local parseFullName() =
-  local fullNameAttr = getAttrById("VQl0wK3eqiw");
-  if fullNameAttr == null then []
-  else
-    local fullNameSplit = std.split(fullNameAttr, " ");
-    local names = [name for name in fullNameSplit if name != ""];
-    local n = std.length(names);
-    if n == 0 then []
-    else
-      [{
-        text: fullNameAttr,
-        given: if n > 1 then [names[i] for i in std.range(0, n - 2)] else [],
-        family: names[n-1]
-      }];
+local fullNameAttr = getAttrById("VQl0wK3eqiw");
+if fullNameAttr == null then []
+else
+local fullNameSplit = std.split(fullNameAttr, " ");
+local names = [
+  name
+  for name in fullNameSplit
+    if name != ""
+];
+local n = std.length(names);
+if n == 0 then []
+else
+[
+  {
+    text: fullNameAttr,
+    given: if n > 1 then [
+      names[i]
+      for i in std.range(0, n - 2)
+    ]      else [],
+    family: names[n-1]
+  }
+];
 
 local parseAddress(address) =
-  local addressAttr = std.map(ds.trim, std.split(address, ","));
-  local postalCity = std.map(ds.trim,std.split(addressAttr[1], " "));
-  {
-    line: [ addressAttr[0] ],
-    postalCode: postalCity[0],
-    city: postalCity[1],
-    district: addressAttr[2],
-    state: addressAttr[3],
-    country: if std.length(addressAttr) > 4 then addressAttr[4] else "LK"
-  };
+local addressAttr = std.map(ds.trim, std.split(address, ",")) default null;
+local postalCity = std.map(ds.trim, std.split(addressAttr[1], " ")) default null;
+{
+  [if addressAttr != null then "line"]: [
+    addressAttr[0]
+  ],
+  [if postalCity != null then "postalCode"]: postalCity[0],
+  [if postalCity != null then "city"]: postalCity[1],
+  [if addressAttr != null && std.length(addressAttr) > 2 then "district"]: addressAttr[2],
+  [if addressAttr != null && std.length(addressAttr) > 3 then "state"]: addressAttr[3],
+  [if addressAttr != null then "country"]: if std.length(addressAttr) > 4 then addressAttr[4] else "LK"
+};
 {
   resourceType: "Bundle",
   type: "transaction",
@@ -71,7 +82,8 @@ local parseAddress(address) =
             system: "http://fhir.health.gov.lk/ips/identifier/phn",
             value: getAttrById(ATTR_PHN)
           },
-          if getAttrById(ATTR_NIC) != null then {
+            if getAttrById(ATTR_NIC) != null
+            then {
             use: "secondary",
             type: {
               coding: [
@@ -86,7 +98,8 @@ local parseAddress(address) =
             system: "http://fhir.health.gov.lk/ips/identifier/nic",
             value: getAttrById(ATTR_NIC)
           },
-          if getAttrById(ATTR_REGNO) != null then {
+            if getAttrById(ATTR_REGNO) != null
+            then {
             use: "secondary",
             system: "urn:dhis2:anc:regno",
             value: getAttrById(ATTR_REGNO)
@@ -94,7 +107,8 @@ local parseAddress(address) =
         ],
         name: parseFullName(),
         telecom: std.prune([
-          if getAttrById(ATTR_PHONE) != null then {
+            if getAttrById(ATTR_PHONE) != null
+            then {
             system: "phone",
             value: getAttrById(ATTR_PHONE)
           }
@@ -102,7 +116,8 @@ local parseAddress(address) =
         gender: if getAttrById(ATTR_GENDER) != null then ds.lower(getAttrById(ATTR_GENDER)) else null,
         birthDate: getAttrById(ATTR_DOB),
         address: std.prune([
-          if getAttrById(ATTR_ADDRESS) != null then parseAddress(getAttrById(ATTR_ADDRESS))
+            if getAttrById(ATTR_ADDRESS) != null
+            then parseAddress(getAttrById(ATTR_ADDRESS))
         ])
       }),
       request: {
