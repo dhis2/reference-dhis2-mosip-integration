@@ -203,13 +203,6 @@ services:
       - dhis2
       - esignet
 
-volumes:
-  db-dump: { }
-  files:
-    driver: local
-  postgresql:
-    driver: local
-
 networks:
   dhis2:
   ehr:
