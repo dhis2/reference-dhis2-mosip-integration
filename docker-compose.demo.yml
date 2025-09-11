@@ -26,7 +26,6 @@ services:
       - ESIGNET_SERVICE_URL=${ESIGNET_SERVICE_URL}
       - ESIGNET_AUD_URL=${ESIGNET_AUD_URL}
       - CLIENT_PRIVATE_KEY=${CLIENT_PRIVATE_KEY}
-    env_file: mock-relying-party-service.env
   fhir-sync-agent:
     environment:
       DHIS2APIURL: http://dhis2:8080/api
