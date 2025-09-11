@@ -22,7 +22,7 @@ const _env_ = {
     REDIRECT_URI_REGISTRATION: 'http://localhost:5000/registration',
     // MOCK_RELYING_PARTY_SERVER_URL: 'http://localhost:5000/api/getUserInfo',
 
-    ACRS: 'mosip:idp:acr:generated-code%20mosip:idp:acr:biometrics%20mosip:idp:acr:static-code',
+    ACRS: 'mosip:idp:acr:generated-code%20mosip:idp:acr:biometrics%20mosip:idp:acr:linked-wallet',
     SCOPE_USER_PROFILE: 'openid%20profile%20resident-service',
     SCOPE_REGISTRATION: 'openid%20profile',
 

@@ -5,10 +5,11 @@
 const FIELD_IDS = Object.freeze({
     ADDRESS: 'address',
     DATE_OF_BIRTH: 'dateOfBirth',
-    GIVEN_NAME: 'givenName',
-    FAMILY_NAME: 'familyName',
+    FULL_NAME: 'fullName',
     PHONE: 'phone',
-    UNIQUE_ID: 'uniqueId',
+    SUBJECT_ID: 'subjectId',
+    GENDER: 'gender',
+    AGE: 'age',
 })
 
 type PersonAddress = {
@@ -57,20 +58,21 @@ export const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
         ? formatAddress(personInfo.address)
         : undefined
 
-    const splitName = personInfo.name.split(' ')
-    const givenName = splitName[0]
-    const familyName = splitName[splitName.length - 1]
-
-    const phone = personInfo.phone_number
-
-    const uniqueId = personInfo.sub
+    // Rough age calculation
+    const yrInMs = 1000 * 60 * 60 * 24 * 365.24
+    // This needs to be a string to work with Capture
+    // (otherwise it causes an error)
+    const age = String(
+        Math.floor((Date.now() - Number(new Date(dateOfBirth))) / yrInMs)
+    )
 
     return {
         [FIELD_IDS.ADDRESS]: address,
         [FIELD_IDS.DATE_OF_BIRTH]: dateOfBirth,
-        [FIELD_IDS.GIVEN_NAME]: givenName,
-        [FIELD_IDS.FAMILY_NAME]: familyName,
-        [FIELD_IDS.PHONE]: phone,
-        [FIELD_IDS.UNIQUE_ID]: uniqueId,
+        [FIELD_IDS.AGE]: age,
+        [FIELD_IDS.FULL_NAME]: personInfo.name,
+        [FIELD_IDS.PHONE]: personInfo.phone_number,
+        [FIELD_IDS.GENDER]: personInfo.gender,
+        [FIELD_IDS.SUBJECT_ID]: personInfo.sub,
     }
 }

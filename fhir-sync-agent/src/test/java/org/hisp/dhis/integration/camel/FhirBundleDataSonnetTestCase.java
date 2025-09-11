@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FhirBundleDataSonnetTestCase {
 
@@ -66,52 +67,55 @@ public class FhirBundleDataSonnetTestCase {
   }
 
   @Test
-  public void testEvaluate() throws IOException {
-    Map<String, Object> trackedEntity =
-        OBJECT_MAPPER.readValue(
-            StreamUtils.copyToString(
-                    Thread.currentThread()
-                        .getContextClassLoader()
-                        .getResourceAsStream("trackedEntity.json"),
-                    Charset.defaultCharset())
-                .replace("<ANC.A.DE9>", "true"),
-            Map.class);
+  public void testCompleteFhirPatientBundleDatasonnetMapping() throws IOException {
+    Map<String, Object> trackedEntity = OBJECT_MAPPER.readValue(
+        StreamUtils.copyToString(
+            Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("trackedEntity.json"),
+            Charset.defaultCharset()),
+        Map.class);
 
     exchange.getMessage().setBody(trackedEntity);
 
     Map<String, Object> fhirBundle = new ValueBuilder(dsExpression).evaluate(exchange, Map.class);
-    Map<String, Object> expectedFhirBundle =
-        OBJECT_MAPPER.readValue(
-            StreamUtils.copyToString(
-                Thread.currentThread()
-                    .getContextClassLoader()
-                    .getResourceAsStream("expectedFhirBundle.json"),
-                Charset.defaultCharset()),
-            Map.class);
+    Map<String, Object> expectedFhirBundle = OBJECT_MAPPER.readValue(
+        StreamUtils.copyToString(
+            Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("expectedFhirBundle.json"),
+            Charset.defaultCharset()),
+        Map.class);
 
     assertEquals(expectedFhirBundle, fhirBundle);
   }
-
+  
   @Test
-  public void testEvaluateWhenWomanDoesNotWantToReceiveRemindersDuringPregnancy()
-      throws IOException {
-    Map<String, Object> trackedEntity =
-        OBJECT_MAPPER.readValue(
-            StreamUtils.copyToString(
-                    Thread.currentThread()
-                        .getContextClassLoader()
-                        .getResourceAsStream("trackedEntity.json"),
-                    Charset.defaultCharset())
-                .replace("<ANC.A.DE9>", "false"),
-            Map.class);
+  public void testMinimalFhirPatientBundleDatasonnetMapping() throws IOException {
+    Map<String, Object> minimalTrackedEntity = OBJECT_MAPPER.readValue(
+      StreamUtils.copyToString(
+        Thread.currentThread()
+          .getContextClassLoader()
+          .getResourceAsStream("minimalTrackedEntity.json"),
+        Charset.defaultCharset()),
+      Map.class);
 
-    exchange.getMessage().setBody(trackedEntity);
+    exchange.getMessage().setBody(minimalTrackedEntity);
 
     Map<String, Object> fhirBundle = new ValueBuilder(dsExpression).evaluate(exchange, Map.class);
+    List<Map<String, Object>> entries = (List<Map<String, Object>>) fhirBundle.get("entry");
+    Map<String, Object> patient = (Map<String, Object>) entries.get(0).get("resource");
+    
+    List<Map<String, Object>> identifiers = (List<Map<String, Object>>) patient.get("identifier");
+    assertEquals("12345678", identifiers.stream().filter(i -> "http://fhir.health.gov.lk/ips/identifier/phn".equals(i.get("system"))).findFirst().get().get("value"));
+    assertEquals("200012345678", identifiers.stream().filter(i -> "http://fhir.health.gov.lk/ips/identifier/nic".equals(i.get("system"))).findFirst().get().get("value"));
+    assertEquals("ANC00000001", identifiers.stream().filter(i -> "urn:dhis2:anc:regno".equals(i.get("system"))).findFirst().get().get("value"));
+    List<Map<String, Object>> names = (List<Map<String, Object>>) patient.get("name");
+    assertEquals("Jane Doe", names.get(0).get("text"));
 
-    assertEquals(2, ((List) fhirBundle.get("entry")).size());
-    assertEquals(
-        "DELETE",
-        ((Map) ((Map) ((List) fhirBundle.get("entry")).get(1)).get("request")).get("method"));
+    assertTrue(patient.get("gender") == null || patient.get("gender").toString().isEmpty());
+    assertTrue(patient.get("birthDate") == null || patient.get("birthDate").toString().isEmpty());
+    assertTrue(patient.get("telecom") == null || ((List<?>) patient.get("telecom")).isEmpty());
+    assertTrue(patient.get("address") == null || ((List<?>) patient.get("address")).isEmpty());
   }
 }

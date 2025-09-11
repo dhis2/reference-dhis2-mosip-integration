@@ -31,20 +31,14 @@ package org.hisp.dhis.integration.camel.route;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
 import org.apache.camel.builder.AdviceWith;
-import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.test.spring.junit5.UseAdviceWith;
 import org.hisp.dhis.api.model.v40_2_2.AttributeInfo;
 import org.hisp.dhis.api.model.v40_2_2.EnrollmentInfo;
@@ -52,6 +46,7 @@ import org.hisp.dhis.api.model.v40_2_2.EventInfo;
 import org.hisp.dhis.api.model.v40_2_2.TrackedEntityInfo;
 import org.hisp.dhis.api.model.v40_2_2.TrackerImportReport;
 import org.hisp.dhis.integration.camel.AbstractFunctionalTestCase;
+import org.hisp.dhis.integration.camel.util.FhirValidatorUtil;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.AfterEach;
@@ -63,78 +58,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTestCase {
   @Autowired private CamelContext camelContext;
 
-  @Autowired private ObjectMapper objectMapper;
-
-  private CamelContext authorisationServerCamelContext;
-
   @BeforeEach
   public void beforeEach() throws Exception {
-    authorisationServerCamelContext = mockAuthorisationServer();
-    authorisationServerCamelContext.start();
+    startMockAuthorisationServer();
   }
 
   @AfterEach
   public void afterEach() throws Exception {
-    authorisationServerCamelContext.close();
-  }
-
-  private CamelContext mockAuthorisationServer() throws Exception {
-    CamelContext authorisationServerCamelContext = new DefaultCamelContext(false);
-    authorisationServerCamelContext.addRoutes(
-        new RouteBuilder() {
-          @Override
-          public void configure() {
-            from("jetty:" + authorisationServerUrl)
-                .process(
-                    exchange -> {
-                      assertEquals(
-                          "Basic ZWhyLWNsaWVudDpwYXNzdzByZA==",
-                          exchange.getMessage().getHeader("Authorization"));
-                      assertEquals(
-                          "grant_type=client_credentials",
-                          exchange.getMessage().getBody(String.class));
-                    })
-                .setBody(
-                    (Function<Exchange, Object>)
-                        exchange ->
-                            Map.of(
-                                "access_token",
-                                "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzOGZSMXNmQzlQb0IxTlcyTTRHUnN4d1UzdUZfYmNjUGNseWt2WVU5c2pRIn0.eyJleHAiOjE3MjczNDg0MTMsImlhdCI6MTcyNzM0ODExMywianRpIjoiN2E4OWQxYWQtOWY4OS00ZDVhLWI4MWItNDU1NjRkZDNjMTNjIiwiaXNzIjoiaHR0cDovL2tleWNsb2FrOjgwODAvcmVhbG1zL2NpdmlsLXJlZ2lzdHJ5IiwiYXVkIjpbImFjY291bnQiLCJjaXZpbC1yZWdpc3RyeS1jbGllbnQiXSwic3ViIjoiY2Y4NmFkY2QtMzIyNi00MWZmLThjY2EtMWJiM2FjNzUyOGM5IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiY2l2aWwtcmVnaXN0cnktY2xpZW50IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIvKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1jaXZpbC1yZWdpc3RyeSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJjbGllbnRIb3N0IjoiMTkyLjE2OC45Ni4xIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtY2l2aWwtcmVnaXN0cnktY2xpZW50IiwiY2xpZW50QWRkcmVzcyI6IjE5Mi4xNjguOTYuMSIsImNsaWVudF9pZCI6ImNpdmlsLXJlZ2lzdHJ5LWNsaWVudCJ9.MYcQDPNz7Z4URYcLOH3v60bNxkqJlyWvYPWIBWp_VYKKZrmTXH2nvG3hPkF8aTHT2P-Kom5iQSwrZz519WB16X-qVYCdvqnCQY1poRITnAXOsjF3I1Ymli29vWdKJvkn7aXmEYn54c00VvfyjCfKbjOweKa-UdIXjfcO8hATP7neo-UiNQ6a7-Sj2TEwGDBFc989Sj40JjIVh6G6rH2h5zte8mxZy1RZUhXDp3DppHZB0ddfrk5rkECLITfsAg6pzyHmzaPYOq8kSRis59yzKgWCXurkq4WOw9-Rz7oNIc1CfPan_8YvYtsnYUG35Rh44UU6cWJnyv1sDIgyUHPIZw",
-                                "expires_in",
-                                300,
-                                "refresh_expires_in",
-                                0,
-                                "token_type",
-                                "Bearer",
-                                "not-before-policy",
-                                0,
-                                "scope",
-                                "email profile"))
-                .marshal()
-                .json();
-          }
-        });
-
-    return authorisationServerCamelContext;
+    stopMockAuthorisationServer();
   }
 
   @Test
   public void testUpsertPatient() throws Exception {
     AdviceWith.adviceWith(camelContext, "upsertPatient", r -> r.weaveAddLast().to("mock:spy"));
     MockEndpoint spyEndpoint = camelContext.getEndpoint("mock:spy", MockEndpoint.class);
+    AdviceWith.adviceWith(camelContext, "upsertDeviceInformation", r -> r.weaveAddLast().to("mock:deviceSpy"));
+    MockEndpoint deviceSpyEndpoint = camelContext.getEndpoint("mock:deviceSpy", MockEndpoint.class);
+    deviceSpyEndpoint.setExpectedCount(1);
     spyEndpoint.setExpectedCount(1);
 
     camelContext.start();
-
-    String orgUnit = "oQlmngiVAes";
-    TrackedEntityInfo trackedEntity =
-        new TrackedEntityInfo()
-            .withOrgUnit(orgUnit)
-            .withTrackedEntityType("MCPQUTHX1Ze")
-            .withEnrollments(
-                addEnrollment(
-                    orgUnit,
-                    List.of("XznDErihed9", "eR4sNwxkd9Q")));
+    deviceSpyEndpoint.assertIsSatisfied(30000);
+    String orgUnit = "Tnl7qgZh7zL";
+    TrackedEntityInfo trackedEntity = new TrackedEntityInfo()
+        .withOrgUnit(orgUnit)
+        .withTrackedEntityType("MxdEsVAegt5")
+        .withAttributes(List.of(
+            new AttributeInfo().withAttribute("VQl0wK3eqiw").withValue("Jane Doe"),
+            new AttributeInfo().withAttribute("CSZevH4P5yV").withValue("ANC00000002"),
+            new AttributeInfo().withAttribute("M6NNPC3hNrb").withValue("200012345679"),
+            new AttributeInfo().withAttribute("p7zizFkC6Lv").withValue("Female"),
+            new AttributeInfo().withAttribute("IrUmPkFMDU5").withValue("12345678"),
+            new AttributeInfo().withAttribute("u5AESfSOhIG").withValue("28"),
+            new AttributeInfo().withAttribute("Yie7mOY913J").withValue("1997-08-01"),
+            new AttributeInfo().withAttribute("gGAQeOr1Pgu").withValue("+94712345678"),
+            new AttributeInfo().withAttribute("EOMGwaUTMrU").withValue("123 Main Street, 1234 Akurana, Kandy, Central Province, LK")))
+        .withEnrollments(
+            addEnrollment(
+                orgUnit,
+                List.of("LWJcStrI6kM", "GX0z9IXFaso")));
 
     dhis2Client
         .post("tracker")
@@ -155,13 +117,27 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
         .get()
         .toString();
 
-    spyEndpoint.assertIsSatisfied(5000);
-
+    spyEndpoint.assertIsSatisfied(30000);
     Bundle patientBundle = (Bundle) fhirClient.search().forResource(Patient.class).execute();
     List<Bundle.BundleEntryComponent> entries = patientBundle.getEntry();
     assertEquals(1, entries.size());
     Patient patient = (Patient) entries.get(0).getResource();
-    assertEquals("8879798", patient.getIdentifier().get(0).getValue());
+    assertEquals("12345678", patient.getIdentifier().get(0).getValue());
+    
+    org.hl7.fhir.r4.model.Parameters params = new org.hl7.fhir.r4.model.Parameters();
+    params.addParameter().setName("resource").setResource(patient);
+
+    org.hl7.fhir.r4.model.Parameters resultParams = fhirClient
+        .operation()
+        .onType(Patient.class)
+        .named("validate")
+        .withParameters(params)
+        .execute();
+
+    org.hl7.fhir.r4.model.OperationOutcome outcome = (org.hl7.fhir.r4.model.OperationOutcome) resultParams.getParameterFirstRep().getResource();
+    String errorDetails = FhirValidatorUtil.extractValidationErrors(outcome);
+    boolean hasError = !errorDetails.isEmpty();
+  assertEquals(false, hasError, errorDetails);
   }
 
   public List<EnrollmentInfo> addEnrollment(String orgUnitId, List<String> programStageIds) {
@@ -174,29 +150,26 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
               .withProgramStage(programStage)
               .withOrgUnit(orgUnitId)
               .withScheduledAt(today)
-              .withProgram("WSGAb5XwJ3Y")
+              .withProgram("eozjj9UivfS")
               .withStatus(EventInfo.StatusRef.SCHEDULE));
     }
 
     return List.of(
         new EnrollmentInfo()
             .withOrgUnit(orgUnitId)
-            .withProgram("WSGAb5XwJ3Y")
+            .withProgram("eozjj9UivfS")
             .withEnrolledAt(today)
             .withAttributes(
                 List.of(
-                    new AttributeInfo().withAttribute("PpEGiQurAll").withValue("8879798"),
-                    new AttributeInfo().withAttribute("sB1IHYu2xQT").withValue("John"),
-                    new AttributeInfo().withAttribute("ENRjVGxVL6l").withValue("Doe"),
-                    new AttributeInfo().withAttribute("NI0QRzJvQ0k").withValue("1990-04-05"),
-                    new AttributeInfo().withAttribute("QjdN4mhh4UN").withValue("true"),
-                    new AttributeInfo().withAttribute("rYnea37ReDs").withValue("true"),
-                    new AttributeInfo().withAttribute("MRGgEyilusR").withValue("true"),
-                    new AttributeInfo().withAttribute("ruUzdQRiYpy").withValue("true"),
-                    new AttributeInfo().withAttribute("AoOp84H5Vt1").withValue("true"),
-                    new AttributeInfo().withAttribute("NihUionWia1").withValue("true"),
-                    new AttributeInfo().withAttribute("qJdyXIggXXJ").withValue("true"),
-                    new AttributeInfo().withAttribute("B6TnnFMgmCk").withValue("35")))
+                    new AttributeInfo().withAttribute("p7zizFkC6Lv").withValue("Female"),
+                    new AttributeInfo().withAttribute("CSZevH4P5yV").withValue("ANC00000002"),
+                    new AttributeInfo().withAttribute("M6NNPC3hNrb").withValue("200012345679"),
+                    new AttributeInfo().withAttribute("IrUmPkFMDU5").withValue("12345678"),
+                    new AttributeInfo().withAttribute("u5AESfSOhIG").withValue("28"),
+                    new AttributeInfo().withAttribute("Yie7mOY913J").withValue("1997-08-01"),
+                    new AttributeInfo().withAttribute("gGAQeOr1Pgu").withValue("+94712345678"),
+                    new AttributeInfo().withAttribute("VQl0wK3eqiw").withValue("Joe Doe"),
+                    new AttributeInfo().withAttribute("EOMGwaUTMrU").withValue("123 Main Street, 1234 Akurana, Kandy, Central Province, LK")))
             .withOccurredAt(today)
             .withStatus(EnrollmentInfo.StatusRef.ACTIVE)
             .withEvents(events));

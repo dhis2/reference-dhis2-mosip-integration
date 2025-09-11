@@ -1,5 +1,5 @@
 {
-  "WSGAb5XwJ3Y": [
+  "eozjj9UivfS": [
     {
       "id": "default",
       "elements": [
@@ -8,104 +8,77 @@
           "type": "plugin",
           "fieldMap": [
             {
-              "IdFromApp": "A6Hb0Kvg4vb",
+              "IdFromApp": "EOMGwaUTMrU",
               "objectType": "TrackedEntityAttribute",
               "IdFromPlugin": "address"
             },
             {
-              "IdFromApp": "NI0QRzJvQ0k",
+              "IdFromApp": "Yie7mOY913J",
               "objectType": "TrackedEntityAttribute",
               "IdFromPlugin": "dateOfBirth"
             },
             {
-              "IdFromApp": "sB1IHYu2xQT",
+              "IdFromApp": "VQl0wK3eqiw",
               "objectType": "TrackedEntityAttribute",
-              "IdFromPlugin": "givenName"
+              "IdFromPlugin": "fullName"
             },
             {
-              "IdFromApp": "ENRjVGxVL6l",
-              "objectType": "TrackedEntityAttribute",
-              "IdFromPlugin": "familyName"
-            },
-            {
-              "IdFromApp": "ciCR6BBvIT4",
+              "IdFromApp": "gGAQeOr1Pgu",
               "objectType": "TrackedEntityAttribute",
               "IdFromPlugin": "phone"
             },
             {
-              "IdFromApp": "PpEGiQurAll",
+              "IdFromApp": "CSZevH4P5yV",
               "objectType": "TrackedEntityAttribute",
-              "IdFromPlugin": "uniqueId"
+              "IdFromPlugin": "registrationNumber"
+            },
+            {
+              "IdFromApp": "p7zizFkC6Lv",
+              "objectType": "TrackedEntityAttribute",
+              "IdFromPlugin": "gender"
+            },
+            {
+              "IdFromApp": "u5AESfSOhIG",
+              "objectType": "TrackedEntityAttribute",
+              "IdFromPlugin": "age"
             }
           ],
-          "pluginSource": "http://localhost:8080/api/apps/esignet-capture-plugin/plugin.html"
+          "pluginSource": "https://mosip.integration.dhis2.org/api/apps/esignet-capture-plugin/plugin.html"
         },
         {
-          "id": "PpEGiQurAll",
+          "id": "CSZevH4P5yV",
           "type": "TrackedEntityAttribute"
         },
         {
-          "id": "sB1IHYu2xQT",
+          "id": "u5AESfSOhIG",
           "type": "TrackedEntityAttribute"
         },
         {
-          "id": "ENRjVGxVL6l",
+          "id": "Yie7mOY913J",
           "type": "TrackedEntityAttribute"
         },
         {
-          "id": "NI0QRzJvQ0k",
+          "id": "VQl0wK3eqiw",
           "type": "TrackedEntityAttribute"
         },
         {
-          "id": "B6TnnFMgmCk",
+          "id": "p7zizFkC6Lv",
           "type": "TrackedEntityAttribute"
         },
         {
-          "id": "A6Hb0Kvg4vb",
+          "id": "EOMGwaUTMrU",
           "type": "TrackedEntityAttribute"
         },
         {
-          "id": "ciCR6BBvIT4",
+          "id": "M6NNPC3hNrb",
           "type": "TrackedEntityAttribute"
         },
         {
-          "id": "qJdyXIggXXJ",
+          "id": "IrUmPkFMDU5",
           "type": "TrackedEntityAttribute"
         },
         {
-          "id": "Y2smKuoVgDU",
-          "type": "TrackedEntityAttribute"
-        },
-        {
-          "id": "ALeyhBFw22F",
-          "type": "TrackedEntityAttribute"
-        },
-        {
-          "id": "LiiC5TIaqva",
-          "type": "TrackedEntityAttribute"
-        },
-        {
-          "id": "NihUionWia1",
-          "type": "TrackedEntityAttribute"
-        },
-        {
-          "id": "AoOp84H5Vt1",
-          "type": "TrackedEntityAttribute"
-        },
-        {
-          "id": "ruUzdQRiYpy",
-          "type": "TrackedEntityAttribute"
-        },
-        {
-          "id": "QjdN4mhh4UN",
-          "type": "TrackedEntityAttribute"
-        },
-        {
-          "id": "rYnea37ReDs",
-          "type": "TrackedEntityAttribute"
-        },
-        {
-          "id": "MRGgEyilusR",
+          "id": "gGAQeOr1Pgu",
           "type": "TrackedEntityAttribute"
         }
       ]
