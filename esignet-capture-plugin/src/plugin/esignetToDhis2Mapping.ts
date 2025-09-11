@@ -7,7 +7,7 @@ const FIELD_IDS = Object.freeze({
     DATE_OF_BIRTH: 'dateOfBirth',
     FULL_NAME: 'fullName',
     PHONE: 'phone',
-    REGISTRATION_NUMBER: 'registrationNumber',
+    SUBJECT_ID: 'subjectId',
     GENDER: 'gender',
     AGE: 'age',
 })
@@ -73,6 +73,6 @@ export const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
         [FIELD_IDS.FULL_NAME]: personInfo.name,
         [FIELD_IDS.PHONE]: personInfo.phone_number,
         [FIELD_IDS.GENDER]: personInfo.gender,
-        [FIELD_IDS.REGISTRATION_NUMBER]: personInfo.sub,
+        [FIELD_IDS.SUBJECT_ID]: personInfo.sub,
     }
 }
