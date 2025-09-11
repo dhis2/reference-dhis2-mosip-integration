@@ -23,6 +23,7 @@ services:
       - esignet-db:/var/lib/postgresql/data
   mock-relying-party-service:
     environment:
+      - ESIGNET_SERVICE_URL=${ESIGNET_SERVICE_URL}
       - CLIENT_PRIVATE_KEY=${ESIGNET_CLIENT_PRIVATE_KEY}
   fhir-sync-agent:
     environment:
