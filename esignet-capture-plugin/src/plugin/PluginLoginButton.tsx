@@ -28,13 +28,18 @@ const searchParams = new URLSearchParams(
 )
 authorizeUrl.search = searchParams.toString()
 
-const handleClick = (/* event */) => {
-    // todo: Position window
+const handleClick = () => {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Window/open
+    // 'left' and 'top' positioning vars don't seem to work
+    // todo: popup or new tab?
     window.open(authorizeUrl, 'esignetLogin', 'popup=true,height=850,width=800')
 }
 
 export const LoginButton = ({ loading }: { loading: boolean }) => {
-    // todo: make into a link button; see advice on https://developer.mozilla.org/en-US/docs/Web/API/Window/open
+    // In most cases, this should be a link button. But it's important to have
+    // the window.opener property in the new window for post-robot, which can be
+    // lost if the user right-clicks and opens the link in a new tab. So, keep
+    // this a button
     return (
         <Button onClick={handleClick} loading={loading} icon={<IconLaunch16 />}>
             {i18n.t('Verify with National ID')}
