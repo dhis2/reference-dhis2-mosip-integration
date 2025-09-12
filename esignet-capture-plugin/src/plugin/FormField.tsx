@@ -5,9 +5,9 @@ import postRobot from 'post-robot'
 import React, { useCallback, useEffect } from 'react'
 import clientDetails from '../clientDetails'
 import { IDataEntryPluginProps } from '../Plugin.types'
+import { dumbMappingToDHIS2 } from './esignetToDhis2Mapping'
 import classes from './FormField.module.css'
 import { LoginButton } from './PluginLoginButton'
-import { dumbMappingToDHIS2 } from './esignetToDhis2Mapping'
 
 const esignetRouteMutation = {
     resource: 'routes/relying-party-service/run',

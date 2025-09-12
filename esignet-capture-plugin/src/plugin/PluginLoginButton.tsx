@@ -1,5 +1,5 @@
 import i18n from '@dhis2/d2-i18n'
-import { Button } from '@dhis2/ui'
+import { Button, IconLaunch16, IconLaunch24 } from '@dhis2/ui'
 import React from 'react'
 import clientDetails from '../clientDetails'
 import esignetLogo from './esignet-logo.png'
@@ -40,13 +40,8 @@ export const LoginButton = ({ loading }: { loading: boolean }) => {
     return (
         <Button onClick={handleClick} loading={loading}>
             <div className={classes.buttonContents}>
-                <img
-                    src={esignetLogo}
-                    width={24}
-                    height={24}
-                    alt={i18n.t('eSignet logo')}
-                />
-                {i18n.t('Verify with eSignet')}
+                <IconLaunch16 />
+                {i18n.t('Verify with National ID')}
             </div>
         </Button>
     )
