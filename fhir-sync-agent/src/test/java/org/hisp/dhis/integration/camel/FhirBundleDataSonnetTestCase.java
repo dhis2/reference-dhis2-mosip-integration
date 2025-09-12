@@ -35,10 +35,13 @@ import org.apache.camel.builder.ValueBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.model.language.DatasonnetExpression;
 import org.apache.camel.support.DefaultExchange;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.StreamUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -54,8 +57,15 @@ public class FhirBundleDataSonnetTestCase {
   private DatasonnetExpression dsExpression;
 
   @BeforeEach
-  public void beforeEach() {
-    dsExpression = new DatasonnetExpression("resource:classpath:fhirBundle.ds");
+  public void beforeEach() throws IOException {
+    String dataSonnetExpression =
+        StringEscapeUtils.unescapeJson(
+            IOUtils.toString(
+                new File("../config/dhis2/trackedEntityMap.json").toURI(),
+                Charset.defaultCharset()));
+    dsExpression =
+        new DatasonnetExpression(
+            dataSonnetExpression.substring(1, dataSonnetExpression.length() - 1));
     dsExpression.setResultType(Map.class);
     dsExpression.setBodyMediaType("application/x-java-object");
     dsExpression.setOutputMediaType("application/x-java-object");
