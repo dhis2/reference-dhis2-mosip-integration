@@ -18,10 +18,23 @@
     color: rgba(0, 0, 0, 0.87) !important;
 }
 
-.buttonContents {
-    display: flex;
-    gap: 8px;
+.verifiedBadge {
+    display: inline-flex;
     align-items: center;
+    gap: 8px;
+
+    pointer-events: none;
+
+    border: 1px solid var(--colors-green300);
+    border-radius: 4px;
+
+    height: 36px;
+    padding: 0px 12px;
+
+    color: var(--colors-green400);
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.5px;
 }
 
 :global(.app-shell-app) {
