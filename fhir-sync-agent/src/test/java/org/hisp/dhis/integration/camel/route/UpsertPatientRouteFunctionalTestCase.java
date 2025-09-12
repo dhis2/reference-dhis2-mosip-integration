@@ -33,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +48,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.test.spring.junit5.UseAdviceWith;
+import org.apache.commons.io.IOUtils;
 import org.hisp.dhis.api.model.v40_2_2.AttributeInfo;
 import org.hisp.dhis.api.model.v40_2_2.EnrollmentInfo;
 import org.hisp.dhis.api.model.v40_2_2.EventInfo;
@@ -58,6 +61,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StreamUtils;
 
 @UseAdviceWith
 public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTestCase {
@@ -125,16 +129,20 @@ public class UpsertPatientRouteFunctionalTestCase extends AbstractFunctionalTest
     spyEndpoint.setExpectedCount(1);
 
     camelContext.start();
+    dhis2Client
+        .post("dataStore/fhirSyncAgent/trackedEntityMap")
+        .withResource(
+            IOUtils.toString(
+                new File("../config/dhis2/trackedEntityMap.json").toURI(), Charset.defaultCharset()))
+        .transfer()
+        .close();
 
     String orgUnit = "oQlmngiVAes";
     TrackedEntityInfo trackedEntity =
         new TrackedEntityInfo()
             .withOrgUnit(orgUnit)
             .withTrackedEntityType("MCPQUTHX1Ze")
-            .withEnrollments(
-                addEnrollment(
-                    orgUnit,
-                    List.of("XznDErihed9", "eR4sNwxkd9Q")));
+            .withEnrollments(addEnrollment(orgUnit, List.of("XznDErihed9", "eR4sNwxkd9Q")));
 
     dhis2Client
         .post("tracker")
