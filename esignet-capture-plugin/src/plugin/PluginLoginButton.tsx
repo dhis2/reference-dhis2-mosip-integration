@@ -1,9 +1,7 @@
 import i18n from '@dhis2/d2-i18n'
-import { Button, IconLaunch16, IconLaunch24 } from '@dhis2/ui'
+import { Button, IconLaunch16 } from '@dhis2/ui'
 import React from 'react'
 import clientDetails from '../clientDetails'
-import esignetLogo from './esignet-logo.png'
-import classes from './FormField.module.css'
 
 // All values are currently URL-encoded here
 // (URL.searchParams.append() will handle that)
@@ -38,11 +36,8 @@ const handleClick = (/* event */) => {
 export const LoginButton = ({ loading }: { loading: boolean }) => {
     // todo: make into a link button; see advice on https://developer.mozilla.org/en-US/docs/Web/API/Window/open
     return (
-        <Button onClick={handleClick} loading={loading}>
-            <div className={classes.buttonContents}>
-                <IconLaunch16 />
-                {i18n.t('Verify with National ID')}
-            </div>
+        <Button onClick={handleClick} loading={loading} icon={<IconLaunch16 />}>
+            {i18n.t('Verify with National ID')}
         </Button>
     )
 }
