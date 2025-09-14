@@ -13,15 +13,17 @@ test.beforeEach(async function({
             }
         })).status()).toBe(200);
 
-    const dhis2DeleteResponse = await request.delete(
-        "http://localhost:8080/api/trackedEntityInstances/12345678", {
-            headers: {
-                "Authorization": "Basic YWRtaW46ZGlzdHJpY3Q=",
-                "Content-Type": "application/json"
-            }
-        }
-    );
-    expect([200, 204, 404]).toContain(dhis2DeleteResponse.status());
+    const dhis2DeleteResponse = await request.post(
+    "http://localhost:8080/api/tracker?async=false&importStrategy=DELETE",
+    {
+      headers: {
+        Authorization: "Basic YWRtaW46ZGlzdHJpY3Q=",
+        "Content-Type": "application/json",
+      },
+      data: { trackedEntities: [{ trackedEntity: "KGY0UKmRqqh" }] },
+    }
+  );
+  expect([200, 409]).toContain(dhis2DeleteResponse.status());
 });
 
 test("should successfully sync tracked entity with EHR",
@@ -48,6 +50,7 @@ test("should successfully sync tracked entity with EHR",
 
         const trackedEntity = {
             "trackedEntities": [{
+                "trackedEntity": "KGY0UKmRqqh",
                 "attributes": [{
                     "attribute": "VQl0wK3eqiw",
                     "value": "Jane Doe"
