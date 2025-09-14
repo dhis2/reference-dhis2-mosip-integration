@@ -1,8 +1,12 @@
 local patient = import 'patientResource.libsonnet';
+local practitioner = import 'practitionerResource.libsonnet';
 
-local entries(tei) =
-  [ patient.patient_entry(ds, tei) ]
-  ;
+local teiUpdatedBy = (body.updatedBy) default null;
+
+local entries(tei) = std.prune([
+  patient.patient_entry(ds, tei),
+  practitioner.practitioner_entry_from_user(ds, teiUpdatedBy)
+]);
 
 {
   resourceType: "Bundle",

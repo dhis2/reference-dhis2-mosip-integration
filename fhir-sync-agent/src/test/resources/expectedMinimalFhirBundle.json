@@ -58,57 +58,15 @@
         ],
         "name": [
           {
-            "text": "John A. B. C. Doe",
-            "given": ["John","A.", "B.", "C."],
+            "text": "Jane Doe",
+            "given": ["Jane"],
             "family": "Doe"
-          }
-        ],
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "+94712345678"
-          }
-        ],
-        "gender": "female",
-        "birthDate": "1997-08-01",
-        "address": [
-          {
-            "line": ["123 Main Street"],
-            "postalCode": "1234",
-            "city": "Akurana",
-            "district": "Kandy",
-            "state": "Central Province",
-            "country": "LK"
           }
         ]
       },
       "request": {
         "method": "PUT",
         "url": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678"
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:dhis2:user:M5zQapPyTZI",
-      "resource": {
-        "resourceType": "Practitioner", 
-        "identifier": [
-          {
-            "system": "urn:dhis2:user:uid",
-            "value": "M5zQapPyTZI"
-          }
-        ],
-        "active": true,
-        "name": [
-          {
-            "text": "admin admin", 
-            "given": ["admin"], 
-            "family": "admin"
-          }
-        ]
-      }, 
-      "request": {
-        "method": "PUT",
-        "url": "Practitioner?identifier=urn:dhis2:user:uid|M5zQapPyTZI"
       }
     }
   ]
