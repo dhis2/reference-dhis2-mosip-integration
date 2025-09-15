@@ -1,4 +1,5 @@
 // import i18n from '@dhis2/d2-i18n'
+import { CssVariables } from '@dhis2/ui'
 import React, { FC } from 'react'
 import { HashRouter, Routes, Route, Outlet } from 'react-router'
 import classes from './App.module.css'
@@ -9,11 +10,12 @@ import './locales'
 
 const Layout: FC = () => (
     <div className={classes.container}>
+        <CssVariables colors />
         <Outlet />
     </div>
 )
 
-const Plugin: FC = (pluginProps: IDataEntryPluginProps) => {
+const Plugin = (pluginProps: IDataEntryPluginProps) => {
     return (
         <HashRouter>
             <Routes>

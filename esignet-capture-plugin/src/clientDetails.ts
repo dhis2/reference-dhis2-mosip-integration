@@ -108,14 +108,14 @@ const claims = {
         address: {
             essential: true,
         },
+        gender: {
+            essential: true,
+        },
         // Doesn't seem to work
         // individual_id: {
         //     essential: true,
         // },
         // picture: {
-        //     essential: false,
-        // },
-        // gender: {
         //     essential: false,
         // },
     },
