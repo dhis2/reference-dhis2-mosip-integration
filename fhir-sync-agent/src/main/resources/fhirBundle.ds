@@ -1,6 +1,7 @@
 local patient = import 'patientResource.libsonnet';
 local practitioner = import 'practitionerResource.libsonnet';
 local encounter = import 'encounterResource.libsonnet';
+local registration = import 'registrationResources.libsonnet';
 
 local teiUpdatedBy = (body.updatedBy) default null;
 
@@ -17,10 +18,9 @@ local entries(tei) = std.prune([
   practitioner.practitioner_entry_from_user(ds, teiUpdatedBy)
 ])
 +
-[
-  encounter.encounter_entry(ds, tei, event) for event in completedEvents(tei)
-];
-
+[ encounter.encounter_entry(ds, tei, event) for event in completedEvents(tei) ]
++
+std.flattenArrays([registration.resources_for_registration_event(ds, tei, ev) for ev in completedEvents(tei)]);
 {
   resourceType: "Bundle",
   type: "transaction",
