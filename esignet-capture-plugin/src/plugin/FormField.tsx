@@ -1,13 +1,13 @@
 import { useDataMutation } from '@dhis2/app-runtime'
 import i18n from '@dhis2/d2-i18n'
-import { Label } from '@dhis2/ui'
+import { colors, IconCheckmark24, Label } from '@dhis2/ui'
 import postRobot from 'post-robot'
 import React, { useCallback, useEffect } from 'react'
 import clientDetails from '../clientDetails'
 import { IDataEntryPluginProps } from '../Plugin.types'
+import { dumbMappingToDHIS2 } from './esignetToDhis2Mapping'
 import classes from './FormField.module.css'
 import { LoginButton } from './PluginLoginButton'
-import { dumbMappingToDHIS2 } from './esignetToDhis2Mapping'
 
 const esignetRouteMutation = {
     resource: 'routes/relying-party-service/run',
@@ -17,7 +17,9 @@ const esignetRouteMutation = {
 
 export const FormField = (pluginProps: IDataEntryPluginProps) => {
     // todo: Handle mutation error in UI
-    const [mutate, { loading }] = useDataMutation(esignetRouteMutation as any)
+    const [mutate, { data, loading }] = useDataMutation(
+        esignetRouteMutation as any
+    )
 
     const { fieldsMetadata, setFieldValue } = pluginProps
 
@@ -79,7 +81,14 @@ export const FormField = (pluginProps: IDataEntryPluginProps) => {
                 </Label>
             </div>
 
-            <LoginButton loading={loading} />
+            {!data ? (
+                <LoginButton loading={loading} />
+            ) : (
+                <div className={classes.verifiedBadge}>
+                    <IconCheckmark24 color={colors.green400} />
+                    {i18n.t('Verified')}
+                </div>
+            )}
         </div>
     )
 }
