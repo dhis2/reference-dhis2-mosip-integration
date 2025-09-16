@@ -112,75 +112,6 @@
       }
     },
     {
-    "fullUrl": "urn:uuid:xIAEBgCaGEY",
-    "resource": {
-      "resourceType": "Encounter",
-      "identifier": [
-        {
-          "system": "urn:dhis2:eventId",
-          "value": "xIAEBgCaGEY"
-        }
-      ],
-      "status": "finished",
-      "class": {
-        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-        "code": "AMB",
-        "display": "ambulatory"
-      },
-      "subject": {
-        "reference": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678"
-      },
-      "period": {
-        "end": "2025-09-04T07:42:13.318"
-      },
-      "type": [
-        {
-          "coding": [
-            {
-              "system": "urn:dhis2:programStage",
-              "code": "GX0z9IXFaso",
-              "display": "ANC Visits"
-            }
-          ],
-          "text": "ANC Visits"
-        }
-      ],
-      "reasonCode": [
-        {
-          "coding": [
-            {
-              "system": "http://snomed.info/sct",
-              "code": "77386006",
-              "display": "Pregnant"
-            },
-            {
-              "system": "urn:dhis2:program",
-              "code": "eozjj9UivfS",
-              "display": "ANC Program"
-            }
-          ],
-          "text": "ANC Care"
-        }
-      ],
-      "participant": [
-        {
-          "type": [
-            {
-              "text": "DHIS2 user who performed latest update to patient."
-            }
-          ],
-          "individual": {
-            "reference": "Practitioner?identifier=urn:dhis2:user:uid|M5zQapPyTZI"
-          }
-        }
-      ]
-    },
-    "request": {
-      "method": "PUT",
-      "url": "Encounter?identifier=urn:dhis2:eventId|xIAEBgCaGEY"
-    }
-    },
-    {
       "fullUrl": "urn:uuid:ANEt5ec0HOM",
       "resource": {
         "resourceType": "Encounter",
@@ -249,6 +180,75 @@
         "method": "PUT",
         "url": "Encounter?identifier=urn:dhis2:eventId|ANEt5ec0HOM"
       }
+    },
+    {
+    "fullUrl": "urn:uuid:bEPWxMXbAdX",
+    "resource": {
+      "resourceType": "Encounter",
+      "identifier": [
+        {
+          "system": "urn:dhis2:eventId",
+          "value": "bEPWxMXbAdX"
+        }
+      ],
+      "status": "finished",
+      "class": {
+        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+        "code": "AMB",
+        "display": "ambulatory"
+      },
+      "subject": {
+        "reference": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678"
+      },
+      "period": {
+        "end": "2025-09-16T13:47:48.961"
+      },
+      "type": [
+        {
+          "coding": [
+            {
+              "system": "urn:dhis2:programStage",
+              "code": "GX0z9IXFaso",
+              "display": "ANC Visits"
+            }
+          ],
+          "text": "ANC Visits"
+        }
+      ],
+      "reasonCode": [
+        {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "77386006",
+              "display": "Pregnant"
+            },
+            {
+              "system": "urn:dhis2:program",
+              "code": "eozjj9UivfS",
+              "display": "ANC Program"
+            }
+          ],
+          "text": "ANC Care"
+        }
+      ],
+      "participant": [
+        {
+          "type": [
+            {
+              "text": "DHIS2 user who performed latest update to patient."
+            }
+          ],
+          "individual": {
+            "reference": "Practitioner?identifier=urn:dhis2:user:uid|M5zQapPyTZI"
+          }
+        }
+      ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Encounter?identifier=urn:dhis2:eventId|bEPWxMXbAdX"
+    }
     },
     {
     "fullUrl": "urn:uuid:observation:ANEt5ec0HOM-BqkEw3MQDNI",
@@ -452,6 +452,7 @@
           "coding": [ { "system": "http://snomed.info/sct", "code": "63718003", "display": "Folic acid (substance)" } ],
           "text": "Folic acid (substance)"
         },
+        "context": { "reference": "Encounter?identifier=urn:dhis2:eventId|ANEt5ec0HOM" },
         "subject": { "reference": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678" },
         "effectiveDateTime": "2025-09-04T07:37:47.106"
       },
@@ -526,6 +527,246 @@
         "occurrenceDateTime": "2025-09-04T07:37:47.106"
       },
       "request": { "method": "PUT", "url": "Immunization?identifier=urn:dhis2:dataelement:uid|RpRCMceQhks" }
+    },
+    {
+      "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-gu4sr8eOZcT",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "identifier": [
+          {
+            "system": "urn:dhis2:dataelement:uid",
+            "value": "gu4sr8eOZcT"
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "urn:dhis2:dataElement",
+              "code": "gu4sr8eOZcT",
+              "display": "POA (weeks)"
+            }
+          ],
+          "text": "POA (weeks)"
+        },
+        "subject": { "reference": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678" },
+        "encounter": { "reference": "Encounter?identifier=urn:dhis2:eventId|bEPWxMXbAdX" },
+        "effectiveDateTime": "2025-09-16T13:47:48.961",
+        "valueInteger": 18
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation?identifier=urn:dhis2:dataelement:uid|gu4sr8eOZcT"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-k7K4aO0RXew",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "identifier": [
+          {
+            "system": "urn:dhis2:dataelement:uid",
+            "value": "k7K4aO0RXew"
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "exam",
+                "display": "Exam"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "26237000",
+              "display": "Ankle edema (finding)"
+            }
+          ],
+          "text": "Ankle Oedema"
+        },
+        "subject": { "reference": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678" },
+        "encounter": { "reference": "Encounter?identifier=urn:dhis2:eventId|bEPWxMXbAdX" },
+        "effectiveDateTime": "2025-09-16T13:47:48.961",
+        "valueBoolean": true
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation?identifier=urn:dhis2:dataelement:uid|k7K4aO0RXew"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-Y3xF4qecAVw",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "identifier": [
+          {
+            "system": "urn:dhis2:dataelement:uid",
+            "value": "Y3xF4qecAVw"
+          }
+        ],
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "vital-signs",
+                "display": "Vital Signs"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "271649006",
+              "display": "Systolic blood pressure (observable entity)"
+            }
+          ],
+          "text": "Systolic Blood Pressure (mmHg)"
+        },
+        "subject": { "reference": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678" },
+        "encounter": { "reference": "Encounter?identifier=urn:dhis2:eventId|bEPWxMXbAdX" },
+        "effectiveDateTime": "2025-09-16T13:47:48.961",
+        "valueInteger": 120
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation?identifier=urn:dhis2:dataelement:uid|Y3xF4qecAVw"
+      }
+  },
+  {
+    "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-Ei55u2kvdzm",
+    "resource": {
+      "resourceType": "Observation",
+      "status": "final",
+      "identifier": [
+        {
+          "system": "urn:dhis2:dataelement:uid",
+          "value": "Ei55u2kvdzm"
+        }
+      ],
+      "category": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+              "code": "exam",
+              "display": "Exam"
+            }
+          ]
+        }
+      ],
+      "code": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "268470003",
+            "display": "Fetal movements felt (finding)"
+          }
+        ],
+        "text": "Foetal Movements"
+      },
+      "subject": { "reference": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678" },
+      "encounter": { "reference": "Encounter?identifier=urn:dhis2:eventId|bEPWxMXbAdX" },
+      "effectiveDateTime": "2025-09-16T13:47:48.961",
+      "valueBoolean": true
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=urn:dhis2:dataelement:uid|Ei55u2kvdzm"
     }
+  },
+  {
+    "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-yQk0w6KiXHJ",
+    "resource": {
+      "resourceType": "Observation",
+      "status": "final",
+      "identifier": [
+        {
+          "system": "urn:dhis2:dataelement:uid",
+          "value": "yQk0w6KiXHJ"
+        }
+      ],
+      "category": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+              "code": "laboratory",
+              "display": "Laboratory"
+            }
+          ]
+        }
+      ],
+      "code": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "167262009",
+            "display": "Urine glucose test = trace (finding)"
+          }
+        ],
+        "text": "Urine Sugar"
+      },
+      "subject": { "reference": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678" },
+      "encounter": { "reference": "Encounter?identifier=urn:dhis2:eventId|bEPWxMXbAdX" },
+      "effectiveDateTime": "2025-09-16T13:47:48.961",
+      "valueBoolean": true
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=urn:dhis2:dataelement:uid|yQk0w6KiXHJ"
+    }
+  },
+  {
+    "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-GCHralHLuAB",
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "status": "active",
+      "identifier": [
+        {
+          "system": "urn:dhis2:dataelement:uid",
+          "value": "GCHralHLuAB"
+        }
+      ],
+      "medicationCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "43706004",
+            "display": "Ascorbic acid (substance)"
+          }
+        ],
+        "text": "Vitamin C"
+      },
+      "subject": { "reference": "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|12345678" },
+      "context": { "reference": "Encounter?identifier=urn:dhis2:eventId|bEPWxMXbAdX" },
+      "effectiveDateTime": "2025-09-16T13:47:48.961"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement?identifier=urn:dhis2:dataelement:uid|GCHralHLuAB"
+    }
+  }
   ]
 }

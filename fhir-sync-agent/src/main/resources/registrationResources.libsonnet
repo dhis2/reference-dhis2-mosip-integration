@@ -495,6 +495,7 @@
                     } ],
                     text: "Folic acid (substance)"
                 },
+                context: { reference: encounterReference },
                 subject: { reference: subjectReference },
                 effectiveDateTime: effectiveDateTime
             },

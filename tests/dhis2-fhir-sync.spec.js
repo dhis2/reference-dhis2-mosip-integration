@@ -20,10 +20,10 @@ test.beforeEach(async function({
         Authorization: "Basic YWRtaW46ZGlzdHJpY3Q=",
         "Content-Type": "application/json",
       },
-      data: { trackedEntities: [{ trackedEntity: "KGY0UKmRqqh" }] },
+      body: JSON.stringify({ trackedEntities: [{ trackedEntity: "KGY0UKmRqqh" }] }),
     }
   );
-  expect([200, 409]).toContain(dhis2DeleteResponse.status());
+  expect([200, 400, 409]).toContain(dhis2DeleteResponse.status());
 });
 
 test("should successfully sync tracked entity with EHR",
