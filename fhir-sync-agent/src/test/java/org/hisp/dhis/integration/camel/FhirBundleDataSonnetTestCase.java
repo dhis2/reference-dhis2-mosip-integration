@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.shortThat;
 
 public class FhirBundleDataSonnetTestCase {
 
@@ -66,52 +68,50 @@ public class FhirBundleDataSonnetTestCase {
   }
 
   @Test
-  public void testEvaluate() throws IOException {
-    Map<String, Object> trackedEntity =
-        OBJECT_MAPPER.readValue(
-            StreamUtils.copyToString(
-                    Thread.currentThread()
-                        .getContextClassLoader()
-                        .getResourceAsStream("trackedEntity.json"),
-                    Charset.defaultCharset())
-                .replace("<ANC.A.DE9>", "true"),
-            Map.class);
+  public void testCompleteFhirPatientBundleDatasonnetMapping() throws IOException {
+    Map<String, Object> trackedEntity = OBJECT_MAPPER.readValue(
+        StreamUtils.copyToString(
+            Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("trackedEntity.json"),
+            Charset.defaultCharset()),
+        Map.class);
 
     exchange.getMessage().setBody(trackedEntity);
 
     Map<String, Object> fhirBundle = new ValueBuilder(dsExpression).evaluate(exchange, Map.class);
-    Map<String, Object> expectedFhirBundle =
-        OBJECT_MAPPER.readValue(
-            StreamUtils.copyToString(
-                Thread.currentThread()
-                    .getContextClassLoader()
-                    .getResourceAsStream("expectedFhirBundle.json"),
-                Charset.defaultCharset()),
-            Map.class);
+    Map<String, Object> expectedFhirBundle = OBJECT_MAPPER.readValue(
+        StreamUtils.copyToString(
+            Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("expectedFhirBundle.json"),
+            Charset.defaultCharset()),
+        Map.class);
 
     assertEquals(expectedFhirBundle, fhirBundle);
   }
-
+  
   @Test
-  public void testEvaluateWhenWomanDoesNotWantToReceiveRemindersDuringPregnancy()
-      throws IOException {
-    Map<String, Object> trackedEntity =
-        OBJECT_MAPPER.readValue(
-            StreamUtils.copyToString(
-                    Thread.currentThread()
-                        .getContextClassLoader()
-                        .getResourceAsStream("trackedEntity.json"),
-                    Charset.defaultCharset())
-                .replace("<ANC.A.DE9>", "false"),
-            Map.class);
+public void testMinimalFhirPatientBundleDatasonnetMapping() throws IOException {
+    Map<String, Object> minimalTrackedEntity = OBJECT_MAPPER.readValue(
+        StreamUtils.copyToString(
+            Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("minimalTrackedEntity.json"),
+            Charset.defaultCharset()),
+        Map.class);
 
-    exchange.getMessage().setBody(trackedEntity);
+    exchange.getMessage().setBody(minimalTrackedEntity);
 
     Map<String, Object> fhirBundle = new ValueBuilder(dsExpression).evaluate(exchange, Map.class);
+    Map<String, Object> expectedFhirBundle = OBJECT_MAPPER.readValue(
+        StreamUtils.copyToString(
+            Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("expectedMinimalFhirBundle.json"),
+            Charset.defaultCharset()),
+        Map.class);
 
-    assertEquals(2, ((List) fhirBundle.get("entry")).size());
-    assertEquals(
-        "DELETE",
-        ((Map) ((Map) ((List) fhirBundle.get("entry")).get(1)).get("request")).get("method"));
-  }
+    assertEquals(expectedFhirBundle, fhirBundle);
+}
 }

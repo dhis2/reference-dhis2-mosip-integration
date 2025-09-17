@@ -1,0 +1,36 @@
+services:
+  dhis2-db:
+    volumes:
+      - dhis2-db:/var/lib/postgresql/data
+  reverse-proxy:
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - ehr
+    volumes:
+      - ./config/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+  ehr:
+    volumes:
+      - ehr-db:/tmp
+    environment:
+      HAPI_FHIR_TESTER_HOME_SERVER_ADDRESS: https://mosip.integration.dhis2.org/nehr/fhir
+      HAPI_FHIR_SERVER_ADDRESS: https://mosip.integration.dhis2.org/nehr/fhir
+      SPRING_DATASOURCE_URL: jdbc:h2:file:/tmp/data/h2
+  esignet-db:
+    volumes:
+      - esignet-db:/var/lib/postgresql/data
+  mock-relying-party-service:
+    environment:
+      - ESIGNET_SERVICE_URL=${ESIGNET_SERVICE_URL}
+      - ESIGNET_AUD_URL=${ESIGNET_AUD_URL}
+      - CLIENT_PRIVATE_KEY=${CLIENT_PRIVATE_KEY}
+  fhir-sync-agent:
+    environment:
+      DHIS2APIURL: http://dhis2:8080/api
+
+volumes:
+  dhis2-db:
+  esignet-db:
+  ehr-db:

@@ -30,6 +30,7 @@
 
 - route:
     id: captureChangeRoute
+    startupOrder: 2
     description: Listens for tracked entity changes in the source DHIS2 database.
     from:
       description: |
@@ -61,7 +62,7 @@
             datasonnet:
               outputMediaType: application/json
               resultType: String
-              bodyMediaType: application/x-java-object
+              bodyMediaType: application/json
               expression: resource:classpath:fhirBundle.ds
         - to: direct:upsertPatient
 
@@ -73,7 +74,7 @@
       uri: direct:fetchTrackedEntity
       steps:
         - toD:
-            description: Fetches the org unit from the source DHIS2 server.
+            description: Fetches the tracked entity from the source DHIS2 server.
             uri: dhis2:get/resource
             parameters:
               path: tracker/trackedEntities/${body.get('uid')}
@@ -82,8 +83,10 @@
               username: ${properties:dhis2ApiUsername:}
               password: ${properties:dhis2ApiPassword:}
               personalAccessToken: ${properties:dhis2ApiPersonalAccessToken:}
-        - unmarshal:
-            json: {}
+        - log: |
+            Fetched tracked entity =>
+            
+            ${body}
 
 - route:
     id: upsertPatient

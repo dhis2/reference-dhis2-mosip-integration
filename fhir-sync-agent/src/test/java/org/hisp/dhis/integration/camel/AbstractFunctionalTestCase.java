@@ -32,12 +32,17 @@ package org.hisp.dhis.integration.camel;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Map;
+import java.util.function.Function;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.hisp.dhis.integration.sdk.Dhis2ClientBuilder;
 import org.hisp.dhis.integration.sdk.api.Dhis2Client;
@@ -75,11 +80,13 @@ public class AbstractFunctionalTestCase {
 
   protected static Dhis2Client dhis2Client;
 
+  protected CamelContext authorisationServerCamelContext;
+
   private static GenericContainer<?> newHapiFhirContainer() {
     return new GenericContainer<>(DockerImageName.parse("hapiproject/hapi:v8.2.0-2-tomcat"))
         .withEnv("SPRING_CONFIG_LOCATION", "file:///data/hapi/application.yaml")
         .withFileSystemBind(
-            "../config/ehr/ips-package.tgz",
+            "../config/ehr/nehr-ips-package.tgz",
             "/package.tgz",
             BindMode.READ_ONLY)
         .withFileSystemBind(
@@ -88,7 +95,7 @@ public class AbstractFunctionalTestCase {
             BindMode.READ_ONLY)
         .withExposedPorts(8080)
         .waitingFor(
-            new HttpWaitStrategy().forStatusCode(200).withStartupTimeout(Duration.ofSeconds(120)));
+            new HttpWaitStrategy().forStatusCode(200).withStartupTimeout(Duration.ofSeconds(300)));
   }
 
   private static GenericContainer<?> newDhis2Container() {
@@ -152,4 +159,51 @@ public class AbstractFunctionalTestCase {
       System.setProperty("oauth2.tokenEndpoint", authorisationServerUrl);
     }
   }
+
+  protected void startMockAuthorisationServer() throws Exception {
+    if (authorisationServerCamelContext == null) {
+        authorisationServerCamelContext = new org.apache.camel.impl.DefaultCamelContext();
+        authorisationServerCamelContext.addRoutes(new org.apache.camel.builder.RouteBuilder() {
+            @Override
+          public void configure() {
+            from("jetty:" + authorisationServerUrl)
+                .process(
+                    exchange -> {
+                      assertEquals(
+                          "Basic ZWhyLWNsaWVudDpwYXNzdzByZA==",
+                          exchange.getMessage().getHeader("Authorization"));
+                      assertEquals(
+                          "grant_type=client_credentials",
+                          exchange.getMessage().getBody(String.class));
+                    })
+                .setBody(
+                    (Function<Exchange, Object>)
+                        exchange ->
+                            Map.of(
+                                "access_token",
+                                "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzOGZSMXNmQzlQb0IxTlcyTTRHUnN4d1UzdUZfYmNjUGNseWt2WVU5c2pRIn0.eyJleHAiOjE3MjczNDg0MTMsImlhdCI6MTcyNzM0ODExMywianRpIjoiN2E4OWQxYWQtOWY4OS00ZDVhLWI4MWItNDU1NjRkZDNjMTNjIiwiaXNzIjoiaHR0cDovL2tleWNsb2FrOjgwODAvcmVhbG1zL2NpdmlsLXJlZ2lzdHJ5IiwiYXVkIjpbImFjY291bnQiLCJjaXZpbC1yZWdpc3RyeS1jbGllbnQiXSwic3ViIjoiY2Y4NmFkY2QtMzIyNi00MWZmLThjY2EtMWJiM2FjNzUyOGM5IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiY2l2aWwtcmVnaXN0cnktY2xpZW50IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIvKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1jaXZpbC1yZWdpc3RyeSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJjbGllbnRIb3N0IjoiMTkyLjE2OC45Ni4xIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtY2l2aWwtcmVnaXN0cnktY2xpZW50IiwiY2xpZW50QWRkcmVzcyI6IjE5Mi4xNjguOTYuMSIsImNsaWVudF9pZCI6ImNpdmlsLXJlZ2lzdHJ5LWNsaWVudCJ9.MYcQDPNz7Z4URYcLOH3v60bNxkqJlyWvYPWIBWp_VYKKZrmTXH2nvG3hPkF8aTHT2P-Kom5iQSwrZz519WB16X-qVYCdvqnCQY1poRITnAXOsjF3I1Ymli29vWdKJvkn7aXmEYn54c00VvfyjCfKbjOweKa-UdIXjfcO8hATP7neo-UiNQ6a7-Sj2TEwGDBFc989Sj40JjIVh6G6rH2h5zte8mxZy1RZUhXDp3DppHZB0ddfrk5rkECLITfsAg6pzyHmzaPYOq8kSRis59yzKgWCXurkq4WOw9-Rz7oNIc1CfPan_8YvYtsnYUG35Rh44UU6cWJnyv1sDIgyUHPIZw",
+                                "expires_in",
+                                300,
+                                "refresh_expires_in",
+                                0,
+                                "token_type",
+                                "Bearer",
+                                "not-before-policy",
+                                0,
+                                "scope",
+                                "email profile"))
+                .marshal()
+                .json();
+          }
+        });
+    }
+    if (!authorisationServerCamelContext.isStarted()) {
+        authorisationServerCamelContext.start();
+        }
+    }
+    protected void stopMockAuthorisationServer() throws Exception {
+        if (authorisationServerCamelContext != null && authorisationServerCamelContext.isStarted()) {
+            authorisationServerCamelContext.stop();
+        }
+    }
 }

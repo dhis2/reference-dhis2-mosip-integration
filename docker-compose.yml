@@ -1,7 +1,7 @@
 services:
   dhis2:
     image: "${DHIS2_IMAGE:-dhis2/core:42.1.0}"
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./config/dhis2/dhis.conf:/opt/dhis2/dhis.conf:ro
     environment:
@@ -23,6 +23,7 @@ services:
 
   dhis2-db:
     image: ghcr.io/baosystems/postgis:13-3.4
+    restart: always
     volumes:
       - ./db-dump:/docker-entrypoint-initdb.d/:ro
       - ./config/dhis2/postgresql.conf:/etc/postgresql.conf
@@ -43,12 +44,18 @@ services:
     networks:
       - dhis2-db
 
-  dhis2-reverse-proxy:
-    image: nginx
+  reverse-proxy:
+    image: nginx:stable-alpine3.21-slim
     restart: always
     depends_on:
       seed:
         condition: service_completed_successfully
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1/api/system/info 2>&1 | grep -q 'HTTP.*200'" ]
+      start_period: 120s
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - "${DHIS2_PORT:-8080}:80"
     volumes:
@@ -61,9 +68,10 @@ services:
 
   ehr:
     image: "hapiproject/hapi:v8.2.0-2-tomcat"
+    restart: always
     volumes:
       - ./config/ehr/hapi.application.yaml:/data/hapi/application.yaml:ro
-      - ./config/ehr/ips-package.tgz:/package.tgz:ro
+      - ./config/ehr/nehr-ips-package.tgz:/package.tgz:ro
     environment:
       SPRING_CONFIG_LOCATION: file:///data/hapi/application.yaml
     healthcheck:
@@ -79,6 +87,7 @@ services:
 
   authorisation-server:
     image: "quay.io/keycloak/keycloak:25.0.6"
+    restart: always
     environment:
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
@@ -107,6 +116,7 @@ services:
 
   ehr-gateway:
     image: "quay.io/oauth2-proxy/oauth2-proxy:v7.6.0"
+    restart: always
     command: --config /oauth2-proxy.cfg
     volumes:
       - "./config/ehr-gateway/oauth2-proxy-keycloak.cfg:/oauth2-proxy.cfg"
@@ -132,11 +142,13 @@ services:
       DHIS2DATABASEUSER: dhis
       DHIS2DATABASEPASSWORD: dhis
       DHIS2DATABASEDBNAME: dhis
-      DHIS2APIURL: http://dhis2-reverse-proxy/api
+      DHIS2APIURL: http://reverse-proxy/api
       DHIS2APIUSERNAME: admin
       DHIS2APIPASSWORD: district
     depends_on:
       authorisation-server:
+        condition: service_healthy
+      reverse-proxy:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
@@ -157,39 +169,31 @@ services:
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/personMap.json http://dhis2:8080/api/dataStore/civilRegistryPlugin/personMap
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d '["http://localhost:*"]' http://dhis2:8080/api/configuration/corsWhitelist
-
-      # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://dhis2:8080/api/apps'
-      # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://dhis2:8080/api/apps'
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -F file=@/esignet-capture-plugin.zip http://dhis2:8080/api/apps
     volumes:
       - ./config/dhis2/roles.json:/roles.json:ro
       - ./config/dhis2/relying-party-service-route.json:/relying-party-service-route.json:ro
       - ./config/dhis2/pluginConfig.json:/pluginConfig.json:ro
       - ./config/dhis2/personMap.json:/personMap.json:ro
-      #- ./civil-registry-plugin/build/bundle/:/civil-registry-plugin/:ro
-      #- ./route-manager-app/build/bundle/:/route-manager-app/:ro
+      - ./esignet-capture-plugin/build/bundle/esignet-capture-plugin-1.0.0.zip:/esignet-capture-plugin.zip:ro
     depends_on:
-      ehr:
-        condition: service_healthy
       dhis2:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
     networks:
       - dhis2
-      - ehr
 
   mock-relying-party-service:
     image: 'mosipid/mock-relying-party-service:0.11.1'
+    restart: always
     user: root
-    ports:
-      - 8888:8888
     environment:
       - ESIGNET_SERVICE_URL=http://esignet:8088/v1/esignet
       # Unusual, but the service wants this to match its own location:
       - ESIGNET_AUD_URL=http://localhost:8088/v1/esignet/oauth/v2/token
       # base64 encoding of config/esignet/privateKeyJwk.json:
       - CLIENT_PRIVATE_KEY=ewogICJrdHkiOiAiUlNBIiwKICAibiI6ICJyTGVZal9nWVIyUkpGOUdkR1ZNMm5LXzF2ZFpjNTNWclc0eGVGU2dDYWYxY2FkV2xpTk9YZmluNE1aOVJDN0RFTWJ0R0FGWGN5dHdudnZLb1VZOG9pU09ZazdHazRITUZtVXpiRXJYa2NvT2c2QnJYRDF0dVV6WDJKbzV5Q2pOa25wTS1GRTNJbGxydV9JdTR3MEZwd1hkNHBOa3BmbXpvd2RFNTJKdG96UE5qLWtwQ1FoejhyUjRVQ1FEM1JZcWFhaks3M3A3aEVNaXk5R0lrZHdSdWdZZUczZG8tWjFRcjF1Z1Y2TEtUZ1JOWloxVmdicDdfMXl4TmljT1BKRGxxa3kxb2RISkVGN21YV2V1Sk9QWUZreVRnTXZJbmk2ck5nVTRVYkVWQVMtN3RDNW1KVVE4Nk5TaWE1UW11THVVbDNvQVFpNVdRZFpiNG1UN1h1R0RiSnciLAogICJlIjogIkFRQUIiLAogICJkIjogIkh1X244T25VbDMwY0pwc1NVOFgzQTB2MWJhS25FNEtSejEwdVFRWGdvTkdVS3hUc3lMeDE1MUJuTjZRODVTWXRqbWJvSEFsRk9rVUREWTN6bm1CUk4zZGJ6aURFMHJ0bnBsVUE3TElPRUlFSlltbmtXY2piMHlYWVNJRzlaWnhkQ3BaX1NTM0JuMFQ4aDlvVEowNWhQaGxEVC12aUpkWW1Qd2xXSGptQUpTMnNLenJfVjh2a3RneWtvZUlvTjl1UDBzQ1pnS285QjN4YkVOTzlfVzJmRlN0Q1BfRkM1NndsUkRQZkl1ZWx4eE40YnYyd1BCcWdzWmFzTHFzVThmRGF6MFZWSUhHM1NHNFMzeDBfOVRzN0dtbGpDNVFham9pU24tYVNDTjBmcktMZDVCLWFfbWdtVmlaVzJpYmpQYWpKX0h5dFpfS2hzOFVUa2hsU3NEUTRxUSIsCiAgInAiOiAiM2VfWGV0Q09rYy1CODEyQjNUNzhBMVo0c2dONTdfdzYxYy1oOHVzTFR6b2h4eFZJamI0MExVbThEdWVRVlgtNzhFaktuOFNfbDBodHdKYzlSeUpmNmtCOF9ZZDBmZUxjTkRwVFJZM0NndFc5eXdfcWFKT083ZjI3bnhaZXNuamRPMENSNkFDcHMzT0ZUcDZVR0dQNFk5U2tCeVhvSGZEYmNGUXg1bE9UU2QwIiwKICAicSI6ICJ4em5heEdxMEhKNy1EUWdURmc1cG5JQVVaMkllRkRmcTh0d29RMzJoMWpwVHhVQzMxY0hFT3FWUFhzTm1xT1A3b2diM0hDRWVzdG4tbXNtc1RPbllBSUZ4RHNzVmRwcjdkQkJaUFJnYXdIRUZodWg1TlU0dVRBX21hMUQ5aktGYmtUd0d0aThIR3RoNlFZTnEyT0lFdTNmb2cxVDQyQkZsanlLajhabXdRdE0iLAogICJkcCI6ICIxNGg3UFh5WldLV3JVRXQ1T1FKWUFHM1QzUjFmS0Y5T1RDTE81bmk1alFHcG1BdmxZREpkdmJXai10Mkw0RnlpaWlKSEZZNGZlcTRPV0VFSWM3TEFiMkNkZ2lJd1Vha2xyVnNQVDdieU5kbVo3a0RRcHlyV1hlNVNiWmR0OC1sSkFLZ2VpcTlLSDBxTEplVF9jZ2gwUzQ5UWxOaU5hYlpsaGR0ZWNvNnJ0Y2siLAogICJkcSI6ICJIS3ptSVNsZW5WUUJLeTBEV2tSZXpTamVSdmNuYnktUlFMMlJpZzFXTXZpWVFDY05qdFhpQWJMemxxYzNhbzNPRlVjOVlDNGdOZ3dNaW9rR3BOZHZ3THJnNUFrMUlLbzBFVU9kSko4SWtyUng0RFlyNUJGSnRxYl9PbWtnNVpJQUZRcDN5TmRDQllvdEpxcmN3VFRmQzRDNTFkVndMLUZwSmM0Tm5PUExMQU0iLAogICJxaSI6ICJpTU16MHFYMnl6RXVmWXNqZk1pYVRkbzZDUnZ5ZGtqcXVpTVZTYW9KLTk0V2NfSVB6bFlTbVgzekU2Z0pPd0xBa3pub3pjYWF4R3lBMzY4ZmtIUzNHbGVfWUlTZ3hxa2EtSTZtR1hOcXV2b0tsU3d2WURpMFZtTlZNckM0RVVsQVNRQjdEMDBWU1dfQkN6VkJJeFQ4QV9wRVlSNXdWT0VoWE55VHdMTjBWUlEiCn0=
-
     security_opt:
       - no-new-privileges:true
     depends_on:
@@ -197,21 +201,12 @@ services:
         condition: service_healthy
     networks:
       - dhis2
-      - default
-
-volumes:
-  db-dump: { }
-  files:
-    driver: local
-  postgresql:
-    driver: local
+      - esignet
 
 networks:
+  dhis2:
   ehr:
-    internal: true
   auth:
     internal: true
   dhis2-db:
-    internal: true
-  dhis2:
     internal: true

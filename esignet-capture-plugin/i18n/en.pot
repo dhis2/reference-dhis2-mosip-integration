@@ -5,17 +5,17 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-09-03T22:41:27.021Z\n"
-"PO-Revision-Date: 2025-09-03T22:41:27.021Z\n"
+"POT-Creation-Date: 2025-09-15T11:25:55.700Z\n"
+"PO-Revision-Date: 2025-09-15T11:25:55.700Z\n"
 
 msgid "Verify patient"
 msgstr "Verify patient"
 
-msgid "eSignet logo"
-msgstr "eSignet logo"
+msgid "Verified"
+msgstr "Verified"
 
-msgid "Verify with eSignet"
-msgstr "Verify with eSignet"
+msgid "Verify with National ID"
+msgstr "Verify with National ID"
 
 msgctxt "Application title"
 msgid "__MANIFEST_APP_TITLE"
