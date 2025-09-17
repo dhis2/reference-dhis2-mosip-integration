@@ -90,12 +90,12 @@
 - route:
     id: fetchTrackedEntity
     description: |
-      Fetches the changed tracked entity from the DHIS2 Web API.
+      Fetches and unmarshals the changed tracked entity from the DHIS2 Web API.
     from:
       uri: direct:fetchTrackedEntity
       steps:
         - toD:
-            description: Fetches the org unit from the DHIS2 server.
+            description: Fetches the tracked entity from the DHIS2 server.
             uri: dhis2:get/resource
             parameters:
               path: tracker/trackedEntities/${body.get('uid')}
