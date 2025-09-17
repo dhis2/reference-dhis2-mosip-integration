@@ -14,7 +14,7 @@
     local effectiveDateTime = (event.completedAt default event.occurredAt);
     local dataValues = event.dataValues default [];
     local getDeById(id) = ds.filter(dataValues, function(v, i) v.dataElement == id)[0].value default null;
-    local observationId(dataElementId) = "observation:" + eventId + "-" + dataElementId;
+    local uniqueResourceId(dataElementId) =  eventId + "-" + dataElementId;
 
     local stringToBool(s) =
         if s == "true" then true
@@ -28,13 +28,13 @@
     ds.filter([
         // POA (weeks) (INTEGER_POSITIVE)
         if getDeById("gu4sr8eOZcT") != null then {
-            fullUrl: "urn:uuid:" + observationId("gu4sr8eOZcT"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("gu4sr8eOZcT"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier:  [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "gu4sr8eOZcT"
+                    value: uniqueResourceId("gu4sr8eOZcT")
                     }
                 ],
                 category: [ {
@@ -61,19 +61,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|gu4sr8eOZcT"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("gu4sr8eOZcT")
             }
         } else null,
 
         // Pallor - BOOLEAN
         if getDeById("Sx8XEKmdhFf") != null then {
-            fullUrl: "urn:uuid:" + observationId("Sx8XEKmdhFf"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("Sx8XEKmdhFf"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
-                system: "urn:dhis2:dataelement:uid",
-                value: "Sx8XEKmdhFf"
+                    system: "urn:dhis2:dataelement:uid",
+                    value: uniqueResourceId("Sx8XEKmdhFf")
                 } ],
                 category: [ {
                 coding: [ {
@@ -97,19 +97,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|Sx8XEKmdhFf"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("Sx8XEKmdhFf")
             }
         } else null,
 
         // Ankle Oedema - BOOLEAN
         if getDeById("k7K4aO0RXew") != null then {
-            fullUrl: "urn:uuid:" + observationId("k7K4aO0RXew"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("k7K4aO0RXew"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "k7K4aO0RXew"
+                    value: uniqueResourceId("k7K4aO0RXew")
                 } ],
                 category: [ {
                     coding: [ {
@@ -133,19 +133,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|k7K4aO0RXew"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("k7K4aO0RXew")
             }
         } else null,
 
         // Facial Oedema - BOOLEAN
         if getDeById("mLZ4hxy2pGQ") != null then {
-            fullUrl: "urn:uuid:" + observationId("mLZ4hxy2pGQ"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("mLZ4hxy2pGQ"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "mLZ4hxy2pGQ"
+                    value: uniqueResourceId("mLZ4hxy2pGQ")
                 } ],
                 category: [ {
                     coding: [ {
@@ -169,19 +169,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|mLZ4hxy2pGQ"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("mLZ4hxy2pGQ")
             }
         } else null,
 
          // Systolic Blood Pressure (mmHg) - INTEGER_POSITIVE
         if getDeById("Y3xF4qecAVw") != null then {
-            fullUrl: "urn:uuid:" + observationId("Y3xF4qecAVw"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("Y3xF4qecAVw"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "Y3xF4qecAVw"
+                    value: uniqueResourceId("Y3xF4qecAVw")
                 } ],
                 category: [ {
                     coding: [ {
@@ -205,19 +205,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|Y3xF4qecAVw"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("Y3xF4qecAVw")
             }
         } else null,
 
         // Diastolic Blood Pressure (mmHg) - INTEGER_POSITIVE
         if getDeById("QMCuOLLRHHD") != null then {
-            fullUrl: "urn:uuid:" + observationId("QMCuOLLRHHD"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("QMCuOLLRHHD"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "QMCuOLLRHHD"
+                    value: uniqueResourceId("QMCuOLLRHHD")
                 } ],
                 category: [ {
                     coding: [ {
@@ -241,19 +241,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|QMCuOLLRHHD"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("QMCuOLLRHHD")
             }
         } else null,
 
         // Fundal Height (cm) - INTEGER_POSITIVE
         if getDeById("aDaoKP0DB1c") != null then {
-            fullUrl: "urn:uuid:" + observationId("aDaoKP0DB1c"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("aDaoKP0DB1c"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "aDaoKP0DB1c"
+                    value: uniqueResourceId("aDaoKP0DB1c")
                 } ],
                 category: [ {
                     coding: [ {
@@ -277,19 +277,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|aDaoKP0DB1c"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("aDaoKP0DB1c")
             }
         } else null,
 
         // Foetal Movements - TRUE_ONLY (need to be present if recorded in DHIS2)
         if getDeById("Ei55u2kvdzm") != null then {
-            fullUrl: "urn:uuid:" + observationId("Ei55u2kvdzm"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("Ei55u2kvdzm"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "Ei55u2kvdzm"
+                    value: uniqueResourceId("Ei55u2kvdzm")
                 } ],
                 category: [ {
                     coding: [ {
@@ -313,19 +313,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|Ei55u2kvdzm"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("Ei55u2kvdzm")
             }
         } else null,
 
         // Foetal Heart Sounds (FHS) - TRUE_ONLY
         if getDeById("xTsKEMPT2so") != null then {
-            fullUrl: "urn:uuid:" + observationId("xTsKEMPT2so"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("xTsKEMPT2so"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "xTsKEMPT2so"
+                    value: uniqueResourceId("xTsKEMPT2so")
                 } ],
                 category: [ {
                     coding: [ {
@@ -349,19 +349,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|xTsKEMPT2so"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("xTsKEMPT2so")
             }
         } else null,
 
         // Urine Sugar - BOOLEAN
         if getDeById("yQk0w6KiXHJ") != null then {
-            fullUrl: "urn:uuid:" + observationId("yQk0w6KiXHJ"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("yQk0w6KiXHJ"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "yQk0w6KiXHJ"
+                    value: uniqueResourceId("yQk0w6KiXHJ")
                 } ],
                 category: [ {
                     coding: [ {
@@ -385,19 +385,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|yQk0w6KiXHJ"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("yQk0w6KiXHJ")
             }
         } else null,
 
         // Urine Albumin - BOOLEAN
         if getDeById("VlLlBQbxmE5") != null then {
-            fullUrl: "urn:uuid:" + observationId("VlLlBQbxmE5"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("VlLlBQbxmE5"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "VlLlBQbxmE5"
+                    value: uniqueResourceId("VlLlBQbxmE5")
                 } ],
                 category: [ {
                     coding: [ {
@@ -421,19 +421,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|VlLlBQbxmE5"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("VlLlBQbxmE5")
             }
         } else null,
 
         // Blood Sugar (mg/dl) - INTEGER_POSITIVE
         if getDeById("CbZCIisQAzv") != null then {
-            fullUrl: "urn:uuid:" + observationId("CbZCIisQAzv"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("CbZCIisQAzv"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "CbZCIisQAzv"
+                    value: uniqueResourceId("CbZCIisQAzv")
                 } ],
                 category: [ {
                     coding: [ {
@@ -457,19 +457,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|CbZCIisQAzv"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("CbZCIisQAzv")
             }
         } else null,
 
         // Hb (g/dl) - NUMBER
         if getDeById("cw35l7X4hnV") != null then {
-            fullUrl: "urn:uuid:" + observationId("cw35l7X4hnV"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("cw35l7X4hnV"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "cw35l7X4hnV"
+                    value: uniqueResourceId("cw35l7X4hnV")
                 } ],
                 category: [ {
                     coding: [ {
@@ -493,19 +493,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|cw35l7X4hnV"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("cw35l7X4hnV")
             }
         } else null,
 
         // Iron Folate - TRUE_ONLY -> include medicationStatement if DHIS2 data element is true
         if getDeById("p7yWXAO6ag7") != null then {
-            fullUrl: "urn:uuid:" + observationId("p7yWXAO6ag7"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("p7yWXAO6ag7"),
             resource: {
                 resourceType: "MedicationStatement",
                 status: "active",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "p7yWXAO6ag7"
+                    value: uniqueResourceId("p7yWXAO6ag7")
                 } ],
                 medicationCodeableConcept: {
                     coding: [ {
@@ -521,19 +521,19 @@
             },
             request: {
                 method: "PUT",
-                url: "MedicationStatement?identifier=urn:dhis2:dataelement:uid|p7yWXAO6ag7"
+                url: "MedicationStatement?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("p7yWXAO6ag7")
             }
         } else null,
 
         // Vitamin C - TRUE_ONLY -> MedicationStatement (present)
         if getDeById("GCHralHLuAB") != null then {
-            fullUrl: "urn:uuid:" + observationId("GCHralHLuAB"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("GCHralHLuAB"),
             resource: {
                 resourceType: "MedicationStatement",
                 status: "active",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "GCHralHLuAB"
+                    value: uniqueResourceId("GCHralHLuAB")
                 } ],
                 medicationCodeableConcept: {
                     coding: [ {
@@ -549,19 +549,19 @@
             },
             request: {
                 method: "PUT",
-                url: "MedicationStatement?identifier=urn:dhis2:dataelement:uid|GCHralHLuAB"
+                url: "MedicationStatement?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("GCHralHLuAB")
             }
         } else null,
 
         // Calcium - TRUE_ONLY -> MedicationStatement (present)
         if getDeById("Kh4Xr0VkC8w") != null then {
-            fullUrl: "urn:uuid:" + observationId("Kh4Xr0VkC8w"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("Kh4Xr0VkC8w"),
             resource: {
                 resourceType: "MedicationStatement",
                 status: "active",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "Kh4Xr0VkC8w"
+                    value: uniqueResourceId("Kh4Xr0VkC8w")
                 } ],
                 medicationCodeableConcept: {
                     coding: [ {
@@ -577,19 +577,19 @@
             },
             request: {
                 method: "PUT",
-                url: "MedicationStatement?identifier=urn:dhis2:dataelement:uid|Kh4Xr0VkC8w"
+                url: "MedicationStatement?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("Kh4Xr0VkC8w")
             }
         } else null,
 
         // Special findings - LONG_TEXT
         if getDeById("XMMTan4EEsB") != null then {
-            fullUrl: "urn:uuid:" + observationId("XMMTan4EEsB"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("XMMTan4EEsB"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "XMMTan4EEsB"
+                    value: uniqueResourceId("XMMTan4EEsB")
                 } ],
                 category: [ {
                     coding: [ {
@@ -613,19 +613,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|XMMTan4EEsB"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("XMMTan4EEsB")
             }
         } else null,
 
         // Need Referral - BOOLEAN
         if getDeById("la93qSXMNCI") != null then {
-            fullUrl: "urn:uuid:" + observationId("la93qSXMNCI"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("la93qSXMNCI"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "la93qSXMNCI"
+                    value: uniqueResourceId("la93qSXMNCI")
                 } ],
                 category: [ {
                     coding: [ {
@@ -649,19 +649,19 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|la93qSXMNCI"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("la93qSXMNCI")
             }
         } else null,
 
         // Reason for Referral - TEXT
         if getDeById("kLAB3XIylS8") != null then {
-            fullUrl: "urn:uuid:" + observationId("kLAB3XIylS8"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("kLAB3XIylS8"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "kLAB3XIylS8"
+                    value: uniqueResourceId("kLAB3XIylS8")
                 } ],
                 category: [ {
                     coding: [ {
@@ -685,7 +685,7 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|kLAB3XIylS8"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("kLAB3XIylS8")
             }
         } else null
     ], function(x) x != null)

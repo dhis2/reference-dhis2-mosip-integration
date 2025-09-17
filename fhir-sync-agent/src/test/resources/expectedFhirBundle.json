@@ -529,14 +529,14 @@
       "request": { "method": "PUT", "url": "Immunization?identifier=urn:dhis2:dataelement:uid|ANEt5ec0HOM-RpRCMceQhks" }
     },
     {
-      "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-gu4sr8eOZcT",
+      "fullUrl": "urn:uuid:bEPWxMXbAdX-gu4sr8eOZcT",
       "resource": {
         "resourceType": "Observation",
         "status": "final",
         "identifier": [
           {
             "system": "urn:dhis2:dataelement:uid",
-            "value": "gu4sr8eOZcT"
+            "value": "bEPWxMXbAdX-gu4sr8eOZcT"
           }
         ],
         "category": [
@@ -567,18 +567,18 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Observation?identifier=urn:dhis2:dataelement:uid|gu4sr8eOZcT"
+        "url": "Observation?identifier=urn:dhis2:dataelement:uid|bEPWxMXbAdX-gu4sr8eOZcT"
       }
     },
     {
-      "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-k7K4aO0RXew",
+      "fullUrl": "urn:uuid:bEPWxMXbAdX-k7K4aO0RXew",
       "resource": {
         "resourceType": "Observation",
         "status": "final",
         "identifier": [
           {
             "system": "urn:dhis2:dataelement:uid",
-            "value": "k7K4aO0RXew"
+            "value": "bEPWxMXbAdX-k7K4aO0RXew"
           }
         ],
         "category": [
@@ -609,18 +609,18 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Observation?identifier=urn:dhis2:dataelement:uid|k7K4aO0RXew"
+        "url": "Observation?identifier=urn:dhis2:dataelement:uid|bEPWxMXbAdX-k7K4aO0RXew"
       }
     },
     {
-      "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-Y3xF4qecAVw",
+      "fullUrl": "urn:uuid:bEPWxMXbAdX-Y3xF4qecAVw",
       "resource": {
         "resourceType": "Observation",
         "status": "final",
         "identifier": [
           {
             "system": "urn:dhis2:dataelement:uid",
-            "value": "Y3xF4qecAVw"
+            "value": "bEPWxMXbAdX-Y3xF4qecAVw"
           }
         ],
         "category": [
@@ -651,18 +651,18 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Observation?identifier=urn:dhis2:dataelement:uid|Y3xF4qecAVw"
+        "url": "Observation?identifier=urn:dhis2:dataelement:uid|bEPWxMXbAdX-Y3xF4qecAVw"
       }
   },
   {
-    "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-Ei55u2kvdzm",
+    "fullUrl": "urn:uuid:bEPWxMXbAdX-Ei55u2kvdzm",
     "resource": {
       "resourceType": "Observation",
       "status": "final",
       "identifier": [
         {
           "system": "urn:dhis2:dataelement:uid",
-          "value": "Ei55u2kvdzm"
+          "value": "bEPWxMXbAdX-Ei55u2kvdzm"
         }
       ],
       "category": [
@@ -693,18 +693,18 @@
     },
     "request": {
       "method": "PUT",
-      "url": "Observation?identifier=urn:dhis2:dataelement:uid|Ei55u2kvdzm"
+      "url": "Observation?identifier=urn:dhis2:dataelement:uid|bEPWxMXbAdX-Ei55u2kvdzm"
     }
   },
   {
-    "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-yQk0w6KiXHJ",
+    "fullUrl": "urn:uuid:bEPWxMXbAdX-yQk0w6KiXHJ",
     "resource": {
       "resourceType": "Observation",
       "status": "final",
       "identifier": [
         {
           "system": "urn:dhis2:dataelement:uid",
-          "value": "yQk0w6KiXHJ"
+          "value": "bEPWxMXbAdX-yQk0w6KiXHJ"
         }
       ],
       "category": [
@@ -735,18 +735,18 @@
     },
     "request": {
       "method": "PUT",
-      "url": "Observation?identifier=urn:dhis2:dataelement:uid|yQk0w6KiXHJ"
+      "url": "Observation?identifier=urn:dhis2:dataelement:uid|bEPWxMXbAdX-yQk0w6KiXHJ"
     }
   },
   {
-    "fullUrl": "urn:uuid:observation:bEPWxMXbAdX-GCHralHLuAB",
+    "fullUrl": "urn:uuid:bEPWxMXbAdX-GCHralHLuAB",
     "resource": {
       "resourceType": "MedicationStatement",
       "status": "active",
       "identifier": [
         {
           "system": "urn:dhis2:dataelement:uid",
-          "value": "GCHralHLuAB"
+          "value": "bEPWxMXbAdX-GCHralHLuAB"
         }
       ],
       "medicationCodeableConcept": {
@@ -765,7 +765,7 @@
     },
     "request": {
       "method": "PUT",
-      "url": "MedicationStatement?identifier=urn:dhis2:dataelement:uid|GCHralHLuAB"
+      "url": "MedicationStatement?identifier=urn:dhis2:dataelement:uid|bEPWxMXbAdX-GCHralHLuAB"
     }
   }
   ]
