@@ -622,7 +622,7 @@
                         code: "74732009",
                         display: "Mental disorder (disorder)"
                     } ],
-                    text: "Mental disorder (disorder)"
+                    text: "Psychiatric Illnesses"
                 },
                 subject: { reference: subjectReference },
                 encounter: { reference: encounterReference }
