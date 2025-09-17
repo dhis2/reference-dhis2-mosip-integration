@@ -1,5 +1,5 @@
 {
-    encounter_entry(ds, tei, event) ::
+    encounter_entry(ds, phnValue, event) ::
     local PROGRAM_ANC_ID = "eozjj9UivfS";
     local PROGRAM_ANC_NAME = "ANC Program";
 
@@ -15,9 +15,6 @@
 
     local dhis2User = (event.updatedBy) default null;
     local dhis2UserId = (dhis2User.uid) default null;
-
-    local getAttrById(attr) = ds.filter(tei.enrollments[0].attributes, function(v, i) v.attribute == attr)[0].value default null;
-    local phnValue = getAttrById("IrUmPkFMDU5");
 
     local isCompleted = (event.status default null) == "COMPLETED";
     local eventId = event.event default null;

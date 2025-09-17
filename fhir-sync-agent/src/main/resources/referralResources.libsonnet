@@ -1,12 +1,9 @@
 {
-    resources_for_referral_event(ds, tei, event) ::
+    resources_for_referral_event(ds, phnValue, event) ::
     local REFERRAL_ID = "aQYZkIhWzeJ";
-    local ATTR_PHN     = "IrUmPkFMDU5";
 
     if (event.programStage default null) != REFERRAL_ID then [] else
 
-    local getAttrById(attr) = ds.filter(tei.enrollments[0].attributes, function(v, i) v.attribute == attr)[0].value default null;
-    local phnValue = getAttrById(ATTR_PHN);
     local subjectReference = "Patient?identifier=http://fhir.health.gov.lk/ips/identifier/phn|" + (phnValue default "");
     local eventId = event.event default null;
 
