@@ -14,7 +14,7 @@
     local effectiveDateTime = (event.completedAt default event.occurredAt);
     local dataValues = event.dataValues default [];
     local getDeById(id) = ds.filter(dataValues, function(v, i) v.dataElement == id)[0].value default null;
-    local observationId(dataElementId) = "observation:" + eventId + "-" + dataElementId;
+    local uniqueResourceId(dataElementId) =  eventId + "-" + dataElementId;
 
     local stringToBool(s) =
         if s == "true" then true
@@ -28,13 +28,13 @@
     ds.filter([
         // Age youngest child (INTEGER)
         if getDeById("BqkEw3MQDNI") != null then {
-            fullUrl: "urn:uuid:" + observationId("BqkEw3MQDNI"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("BqkEw3MQDNI"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "BqkEw3MQDNI"
+                    value: uniqueResourceId("BqkEw3MQDNI")
                 } ],
                 category: [
                     {
@@ -62,14 +62,14 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|BqkEw3MQDNI"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("BqkEw3MQDNI")
             }
         }
         else null,
 
         // Cardiac Diseases (BOOLEAN)
         if getDeById("R4EnBNPKblS") != null then {
-            fullUrl: "urn:uuid:" + observationId("R4EnBNPKblS"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("R4EnBNPKblS"),
             resource: {
                 resourceType: "Condition",
                 clinicalStatus: {
@@ -88,7 +88,7 @@
                 },
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "R4EnBNPKblS"
+                    value: uniqueResourceId("R4EnBNPKblS")
                 } ],
                 code: {
                     coding: [ {
@@ -103,20 +103,20 @@
             },
             request: {
                 method: "PUT",
-                url: "Condition?identifier=urn:dhis2:dataelement:uid|R4EnBNPKblS"
+                url: "Condition?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("R4EnBNPKblS")
             }
         }
         else null,
 
         // Consanguinity (BOOLEAN)
         if getDeById("YuZEbIjLLKZ") != null then {
-            fullUrl: "urn:uuid:" + observationId("YuZEbIjLLKZ"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("YuZEbIjLLKZ"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "YuZEbIjLLKZ"
+                    value: uniqueResourceId("YuZEbIjLLKZ")
                 } ],
                 category: [
                     {
@@ -144,14 +144,14 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|YuZEbIjLLKZ"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("YuZEbIjLLKZ")
             }
         }
         else null,
 
         // Diabetes (BOOLEAN)
         if getDeById("D5khklwbOPt") != null then {
-            fullUrl: "urn:uuid:" + observationId("D5khklwbOPt"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("D5khklwbOPt"),
             resource: {
                 resourceType: "Condition",
                 clinicalStatus: {
@@ -170,7 +170,7 @@
                 },
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "D5khklwbOPt"
+                    value: uniqueResourceId("D5khklwbOPt")
                 } ],
                 code: {
                     coding: [ {
@@ -185,20 +185,20 @@
             },
             request: {
                 method: "PUT",
-                url: "Condition?identifier=urn:dhis2:dataelement:uid|D5khklwbOPt"
+                url: "Condition?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("D5khklwbOPt")
             }
         }
         else null,
 
         // EDD by dates (DATE)
         if getDeById("r5TIiovGHdi") != null then {
-            fullUrl: "urn:uuid:" + observationId("r5TIiovGHdi"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("r5TIiovGHdi"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "r5TIiovGHdi"
+                    value: uniqueResourceId("r5TIiovGHdi")
                 } ],
                 category: [
                     {
@@ -226,20 +226,20 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|r5TIiovGHdi"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("r5TIiovGHdi")
             }
         }
         else null,
 
         // Gravida (G) (INTEGER)
         if getDeById("TRkCMVFhrmr") != null then {
-            fullUrl: "urn:uuid:" + observationId("TRkCMVFhrmr"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("TRkCMVFhrmr"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "TRkCMVFhrmr"
+                    value: uniqueResourceId("TRkCMVFhrmr")
                 } ],
                 category: [
                     {
@@ -267,14 +267,14 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|TRkCMVFhrmr"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("TRkCMVFhrmr")
             }
         }
         else null,
 
         // Hepatic Diseases (BOOLEAN)
         if getDeById("H8VPisy6Ket") != null then {
-            fullUrl: "urn:uuid:" + observationId("H8VPisy6Ket"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("H8VPisy6Ket"),
             resource: {
                 resourceType: "Condition",
                 clinicalStatus: {
@@ -293,7 +293,7 @@
                 },
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "H8VPisy6Ket"
+                    value: uniqueResourceId("H8VPisy6Ket")
                 } ],
                 code: {
                     coding: [ {
@@ -308,20 +308,20 @@
             },
             request: {
                 method: "PUT",
-                url: "Condition?identifier=urn:dhis2:dataelement:uid|H8VPisy6Ket"
+                url: "Condition?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("H8VPisy6Ket")
             }
         }
         else null,
 
         // History of subfertility (BOOLEAN)
         if getDeById("n2rSTrjRQ8O") != null then {
-            fullUrl: "urn:uuid:" + observationId("n2rSTrjRQ8O"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("n2rSTrjRQ8O"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "n2rSTrjRQ8O"
+                    value: uniqueResourceId("n2rSTrjRQ8O")
                 } ],
                 category: [
                     {
@@ -349,14 +349,14 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|n2rSTrjRQ8O"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("n2rSTrjRQ8O")
             }
         }
         else null,
 
         // Hypertension (BOOLEAN)
         if getDeById("plTkCmySMzT") != null then {
-            fullUrl: "urn:uuid:" + observationId("plTkCmySMzT"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("plTkCmySMzT"),
             resource: {
                 resourceType: "Condition",
                 clinicalStatus: {
@@ -375,7 +375,7 @@
                 },
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "plTkCmySMzT"
+                    value: uniqueResourceId("plTkCmySMzT")
                 } ],
                 code: {
                     coding: [ {
@@ -390,20 +390,20 @@
             },
             request: {
                 method: "PUT",
-                url: "Condition?identifier=urn:dhis2:dataelement:uid|plTkCmySMzT"
+                url: "Condition?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("plTkCmySMzT")
             }
         }
         else null,
 
         // Last Menstrual Period (LMP) (DATE)
         if getDeById("vuDExM32SZ6") != null then {
-            fullUrl: "urn:uuid:" + observationId("vuDExM32SZ6"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("vuDExM32SZ6"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "vuDExM32SZ6"
+                    value: uniqueResourceId("vuDExM32SZ6")
                 } ],
                 category: [
                     {
@@ -431,20 +431,20 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|vuDExM32SZ6"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("vuDExM32SZ6")
             }
         }
         else null,
 
         // Number of Living Children (INTEGER)
         if getDeById("OMe6LMsusv4") != null then {
-            fullUrl: "urn:uuid:" + observationId("OMe6LMsusv4"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("OMe6LMsusv4"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "OMe6LMsusv4"
+                    value: uniqueResourceId("OMe6LMsusv4")
                 } ],
                 category: [
                     {
@@ -472,20 +472,20 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|OMe6LMsusv4"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("OMe6LMsusv4")
             }
         }
         else null,
 
         // On folic acid (BOOLEAN)
         if getDeById("J3eLUAZkM6M") != null then {
-            fullUrl: "urn:uuid:" + observationId("J3eLUAZkM6M"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("J3eLUAZkM6M"),
             resource: {
                 resourceType: "MedicationStatement",
                 status: "active",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "J3eLUAZkM6M"
+                    value: uniqueResourceId("J3eLUAZkM6M")
                 } ],
                 medicationCodeableConcept: {
                     coding: [ {
@@ -501,20 +501,20 @@
             },
             request: {
                 method: "PUT",
-                url: "MedicationStatement?identifier=urn:dhis2:dataelement:uid|J3eLUAZkM6M"
+                url: "MedicationStatement?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("J3eLUAZkM6M")
             }
         }
         else null,
 
         // Parity (P) (INTEGER)
         if getDeById("NPnDmeGBLsl") != null then {
-            fullUrl: "urn:uuid:" + observationId("NPnDmeGBLsl"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("NPnDmeGBLsl"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "NPnDmeGBLsl"
+                    value: uniqueResourceId("NPnDmeGBLsl")
                 } ],
                 category: [
                     {
@@ -542,20 +542,20 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|NPnDmeGBLsl"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("NPnDmeGBLsl")
             }
         }
         else null,
 
         // POA at Registration (weeks) (INTEGER)
         if getDeById("No3jJWIR7bn") != null then {
-            fullUrl: "urn:uuid:" + observationId("No3jJWIR7bn"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("No3jJWIR7bn"),
             resource: {
                 resourceType: "Observation",
                 status: "final",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "No3jJWIR7bn"
+                    value: uniqueResourceId("No3jJWIR7bn")
                 } ],
                 category: [
                     {
@@ -588,14 +588,14 @@
             },
             request: {
                 method: "PUT",
-                url: "Observation?identifier=urn:dhis2:dataelement:uid|No3jJWIR7bn"
+                url: "Observation?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("No3jJWIR7bn")
             }
         }
         else null,
 
         // Psychiatric Illnesses (BOOLEAN)
         if getDeById("OGGnIEQSH1O") != null then {
-            fullUrl: "urn:uuid:" + observationId("OGGnIEQSH1O"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("OGGnIEQSH1O"),
             resource: {
                 resourceType: "Condition",
                 clinicalStatus: {
@@ -614,7 +614,7 @@
                 },
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "OGGnIEQSH1O"
+                    value: uniqueResourceId("OGGnIEQSH1O")
                 } ],
                 code: {
                     coding: [ {
@@ -629,14 +629,14 @@
             },
             request: {
                 method: "PUT",
-                url: "Condition?identifier=urn:dhis2:dataelement:uid|OGGnIEQSH1O"
+                url: "Condition?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("OGGnIEQSH1O")
             }
         }
         else null,
 
         // Renal Diseases (BOOLEAN)
         if getDeById("MQ2Hi22F8Uj") != null then {
-            fullUrl: "urn:uuid:" + observationId("MQ2Hi22F8Uj"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("MQ2Hi22F8Uj"),
             resource: {
                 resourceType: "Condition",
                 clinicalStatus: {
@@ -655,7 +655,7 @@
                 },
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "MQ2Hi22F8Uj"
+                    value: uniqueResourceId("MQ2Hi22F8Uj")
                 } ],
                 code: {
                     coding: [ {
@@ -670,20 +670,20 @@
             },
             request: {
                 method: "PUT",
-                url: "Condition?identifier=urn:dhis2:dataelement:uid|MQ2Hi22F8Uj"
+                url: "Condition?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("MQ2Hi22F8Uj")
             }
         }
         else null,
 
         // Rubella Immunization (BOOLEAN)
         if getDeById("RpRCMceQhks") != null then {
-            fullUrl: "urn:uuid:" + observationId("RpRCMceQhks"),
+            fullUrl: "urn:uuid:" + uniqueResourceId("RpRCMceQhks"),
             resource: {
                 resourceType: "Immunization",
                 status: "completed",
                 identifier: [ {
                     system: "urn:dhis2:dataelement:uid",
-                    value: "RpRCMceQhks"
+                    value: uniqueResourceId("RpRCMceQhks")
                 } ],
                 vaccineCode: {
                     coding: [ {
@@ -698,7 +698,7 @@
             },
             request: {
                 method: "PUT",
-                url: "Immunization?identifier=urn:dhis2:dataelement:uid|RpRCMceQhks"
+                url: "Immunization?identifier=urn:dhis2:dataelement:uid|" + uniqueResourceId("RpRCMceQhks")
             }
         }
         else null
