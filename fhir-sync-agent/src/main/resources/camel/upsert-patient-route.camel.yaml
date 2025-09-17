@@ -57,23 +57,45 @@
             simple: ${headers.CamelDebeziumOperation} != 'd'
         - log: "Capturing database change [${headers}]..."
         - to: direct:fetchTrackedEntity
+        - to:
+            uri: direct:fetchTrackedEntityMap
+            variableReceive: trackedEntityMap
         - transform:
-            datasonnet:
-              outputMediaType: application/json
-              resultType: String
-              bodyMediaType: application/x-java-object
-              expression: resource:classpath:fhirBundle.ds
+            groovy: |
+              camelContext.resolveLanguage('datasonnet').createExpression(variables.get('trackedEntityMap')).with {
+                outputMediaType = new com.datasonnet.document.MediaType('application', 'json')
+                resultType = String
+                bodyMediaType = new com.datasonnet.document.MediaType('application', 'x-java-object')
+                evaluate(exchange, String)
+              }
         - to: direct:upsertPatient
+
+- route:
+    id: fetchTrackedEntityMap
+    from:
+      uri: direct:fetchTrackedEntityMap
+      steps:
+        - toD:
+            description: Fetches the DataSonnet expression from the DHIS2 server's data store.
+            uri: dhis2:get/resource
+            parameters:
+              path: dataStore/fhirSyncAgent/trackedEntityMap
+              baseApiUrl: ${properties:dhis2ApiUrl}
+              username: ${properties:dhis2ApiUsername:}
+              password: ${properties:dhis2ApiPassword:}
+              personalAccessToken: ${properties:dhis2ApiPersonalAccessToken:}
+        - unmarshal:
+            json: { }
 
 - route:
     id: fetchTrackedEntity
     description: |
-      Fetches the changed tracked entity from the DHIS2 Web API.
+      Fetches and unmarshals the changed tracked entity from the DHIS2 Web API.
     from:
       uri: direct:fetchTrackedEntity
       steps:
         - toD:
-            description: Fetches the org unit from the source DHIS2 server.
+            description: Fetches the tracked entity from the DHIS2 server.
             uri: dhis2:get/resource
             parameters:
               path: tracker/trackedEntities/${body.get('uid')}
@@ -83,7 +105,7 @@
               password: ${properties:dhis2ApiPassword:}
               personalAccessToken: ${properties:dhis2ApiPersonalAccessToken:}
         - unmarshal:
-            json: {}
+            json: { }
 
 - route:
     id: upsertPatient
