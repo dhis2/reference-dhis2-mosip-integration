@@ -8,6 +8,7 @@
     local ATTR_NIC      = "M6NNPC3hNrb";
     local ATTR_ADDRESS  = "EOMGwaUTMrU";
     local ATTR_PHN      = "IrUmPkFMDU5";
+    local ATTR_SUBJECT_ID = "CJLJmmp8r9g";
 
     local getAttrById(attr) = ds.filter(tei.enrollments[0].attributes, function(v, i) v.attribute == attr)[0].value default null;
 
@@ -71,6 +72,11 @@
             },
             system: "http://fhir.health.gov.lk/ips/identifier/phn",
             value: getAttrById(ATTR_PHN),
+          },
+          if getAttrById(ATTR_SUBJECT_ID) != null then {
+            use: "secondary",
+            system: "urn:esignet:sub",
+            value: getAttrById(ATTR_SUBJECT_ID),
           },
           if getAttrById(ATTR_NIC) != null then {
             use: "secondary",

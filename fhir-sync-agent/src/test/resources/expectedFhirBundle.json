@@ -36,6 +36,11 @@
             "value": "12345678"
           },
           {
+            "use": "secondary", 
+            "system": "urn:esignet:sub",
+            "value": "SUB0001"
+          },
+          {
             "use": "secondary",
             "type": {
               "coding": [
