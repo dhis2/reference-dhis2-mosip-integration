@@ -486,7 +486,12 @@
                 subject: { reference: subjectReference },
                 encounter: { reference: encounterReference },
                 effectiveDateTime: effectiveDateTime,
-                valueDecimal: asFloat(getDeById("cw35l7X4hnV"))
+                valueQuantity: {
+                    value: asFloat(getDeById("cw35l7X4hnV")),
+                    unit: "g/dl",
+                    system: "http://unitsofmeasure.org",
+                    code: "g/dL"
+                },
             },
             request: {
                 method: "PUT",
