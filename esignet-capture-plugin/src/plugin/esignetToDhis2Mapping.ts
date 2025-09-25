@@ -10,6 +10,7 @@ const FIELD_IDS = Object.freeze({
     SUBJECT_ID: 'subjectId',
     GENDER: 'gender',
     AGE: 'age',
+    INDIVIDUAL_ID: 'individualId',
 })
 
 type PersonAddress = {
@@ -28,6 +29,7 @@ type PersonInfo = {
     birthdate: string
     email: string
     gender?: string
+    individual_id?: string
     iss: string
     /** Full name */
     name: string
@@ -74,5 +76,6 @@ export const dumbMappingToDHIS2 = (personInfo: PersonInfo) => {
         [FIELD_IDS.PHONE]: personInfo.phone_number,
         [FIELD_IDS.GENDER]: personInfo.gender,
         [FIELD_IDS.SUBJECT_ID]: personInfo.sub,
+        [FIELD_IDS.INDIVIDUAL_ID]: personInfo.individual_id,
     }
 }

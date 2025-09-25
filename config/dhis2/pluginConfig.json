@@ -46,6 +46,11 @@
               "IdFromApp": "CJLJmmp8r9g",
               "objectType": "TrackedEntityAttribute",
               "IdFromPlugin": "subjectId"
+            },
+            {
+              "IdFromApp": "M6NNPC3hNrb",
+              "objectType": "TrackedEntityAttribute",
+              "IdFromPlugin": "individualId"
             }
           ],
           "pluginSource": "https://mosip.integration.dhis2.org/api/apps/esignet-capture-plugin/plugin.html"
