@@ -2,9 +2,6 @@
     display: flex;
     padding: 8px 8px 8px 12px;
     width: 100%;
-    /* This... for some reason fixes an issue in Windows where the plugin
-    will hit a resize loop and shrink to it's minimum size: */
-    border: 1px solid transparent;
 }
 
 .labelContainer {
@@ -40,4 +37,10 @@
 :global(.app-shell-app) {
     background-color: #fbfcfd;
     border-block-end: 1px solid #e8edf2;
+}
+
+/* This... for some reason fixes an issue in Windows where the plugin
+   will hit a resize loop and shrink to it's minimum size: */
+:global(#resizeDiv > *) {
+    border: 1px solid transparent;
 }
