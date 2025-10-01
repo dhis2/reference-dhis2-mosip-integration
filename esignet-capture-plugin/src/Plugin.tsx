@@ -2,17 +2,16 @@
 import { CssVariables } from '@dhis2/ui'
 import React, { FC } from 'react'
 import { HashRouter, Routes, Route, Outlet } from 'react-router'
-import classes from './App.module.css'
 import { FormField } from './plugin/FormField'
 import { RedirectHandler } from './plugin/RedirectHandler'
 import { IDataEntryPluginProps } from './Plugin.types'
 import './locales'
 
 const Layout: FC = () => (
-    <div className={classes.container}>
+    <>
         <CssVariables colors />
         <Outlet />
-    </div>
+    </>
 )
 
 const Plugin = (pluginProps: IDataEntryPluginProps) => {
