@@ -1,0 +1,21 @@
+.formFieldContainer {
+    display: flex;
+    align-items: center;
+    padding: 8px 8px 8px 12px;
+    border: 1px solid;
+    width: 100% !important;
+}
+
+.labelWrapper {
+    border: 1px solid;
+    min-width: 40%;
+}
+
+.labelText {
+    border: 1px solid #f00;
+}
+
+.buttonWrapper {
+    border: 1px solid;
+    /* left: 0 */
+}
