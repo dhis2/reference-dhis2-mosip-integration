@@ -1,0 +1,9 @@
+{
+  "name": "queryNehr",
+  "code": "queryNehr",
+  "url": "https://mosip.integration.dhis2.org/nehr/fhir/Patient",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "responseTimeoutSeconds": 20
+}
