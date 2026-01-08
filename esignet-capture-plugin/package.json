@@ -22,6 +22,6 @@
     "@dhis2/app-runtime": "^3.14.5",
     "@dhis2/ui": "^10.9.0",
     "post-robot": "^10.0.46",
-    "react-router": "^7.8.2"
+    "react-router": "^7.12.0"
   }
 }
