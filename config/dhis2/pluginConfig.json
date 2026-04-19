@@ -88,6 +88,23 @@
           "type": "TrackedEntityAttribute"
         },
         {
+            "id": "srilanka-phn-generator-plugin",
+            "type": "plugin",
+            "fieldMap": [
+                {
+                    "IdFromApp": "IrUmPkFMDU5",
+                    "objectType": "TrackedEntityAttribute",
+                    "IdFromPlugin": "phn"
+                },
+                {
+                    "IdFromApp": "JTKAPrAGCai",
+                    "objectType": "TrackedEntityAttribute",
+                    "IdFromPlugin": "isPhnVerified"
+                }
+            ],
+            "pluginSource": "https://mosip.integration.dhis2.org/api/apps/srilanka-phn-generator-plugin/plugin.html"
+        },
+        {
           "id": "gGAQeOr1Pgu",
           "type": "TrackedEntityAttribute"
         }
