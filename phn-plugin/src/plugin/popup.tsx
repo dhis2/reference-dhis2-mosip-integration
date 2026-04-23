@@ -26,6 +26,7 @@ export const popupHtml = `
 
     <script>
         (function () {
+            let baseUrl = ''
             const input = document.getElementById('phnInput');
             const resultEl = document.getElementById('result');
             const searchBtn = document.getElementById('searchBtn');
@@ -124,7 +125,15 @@ export const popupHtml = `
 
             // perform fetch search
             async function performSearch(value, autoSelectIfSingle = false) {
+
                 const v = String(value || '').trim();
+
+                // Sanitize: only allow alphanumeric characters and hyphens
+                const sanitized = v.replace(/[^a-zA-Z0-9\-]/g, '')
+                if (!sanitized || sanitized !== v) {
+                    resultEl.innerHTML = "<div class='not-found'>⚠️ Invalid PHN format.</div>"
+                    return
+                }
                 if (!v) {
                     resultEl.innerHTML = "<div class='not-found'>⚠️ Please enter a PHN.</div>";
                     return;
@@ -133,9 +142,15 @@ export const popupHtml = `
 
                 try {
                     const response = await fetch(
-                        "https://mosip.integration.dhis2.org/api/routes/queryNehr/run?identifier=" + encodeURIComponent(v),
+                        baseUrl + '/api/routes/queryNehr/run',
                         {
-                            method: "GET"
+                            method: "POST",
+                            headers: { 
+                                "Content-Type": "application/x-www-form-urlencoded",
+                                "Accept": "application/fhir+json"
+                            },
+                            credentials: "include",
+                            body: new URLSearchParams({ identifier: v }).toString()
                         }
                     );
 
@@ -168,6 +183,7 @@ export const popupHtml = `
                 if (d.type === 'INIT_PHN') {
                     // reply ack
                     try { window.opener?.postMessage({ type: 'INIT_ACK' }, "*") } catch (e) {}
+                    if (d.baseUrl) baseUrl = d.baseUrl
                     if (d.phn) triggerSearchFromParent(d.phn);
                 }
             });

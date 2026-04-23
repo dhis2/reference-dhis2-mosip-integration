@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
+import { useConfig } from '@dhis2/app-runtime'
 import { ButtonStrip } from '@dhis2/ui'
 import { IFormFieldPluginProps } from './Plugin.types'
 import { generatePhn } from './plugin/phn'
@@ -8,6 +9,7 @@ import { StatusButton } from './plugin/statusButton'
 
 const Plugin = ({ setFieldValue, values }: IFormFieldPluginProps) => {
 
+    const { baseUrl } = useConfig()
     const [generatedPHN, setGeneratedPHN] = useState<string>('')
     const [phnStatus, setPhnStatus] = useState<'idle' | 'loading' | 'done'>('idle')
     const [verifyStatus, setVerifyStatus] = useState<'idle' | 'loading' | 'done'>('idle')
@@ -86,7 +88,7 @@ const Plugin = ({ setFieldValue, values }: IFormFieldPluginProps) => {
             if (data.type === 'POPUP_READY') {
                 // send INIT_PHN once immediately and start retries until we receive INIT_ACK
                 try {
-                    popup.postMessage({ type: 'INIT_PHN', phn: existingPhn }, '*')
+                    popup.postMessage({ type: 'INIT_PHN', phn: existingPhn, baseUrl }, '*')
                 } catch (e) { /* ignore */ }
 
                 // Start retries (stop on INIT_ACK)
@@ -98,7 +100,7 @@ const Plugin = ({ setFieldValue, values }: IFormFieldPluginProps) => {
                         return
                     }
                     try {
-                        popup.postMessage({ type: 'INIT_PHN', phn: existingPhn }, '*')
+                        popup.postMessage({ type: 'INIT_PHN', phn: existingPhn, baseUrl }, '*')
                     } catch (e) {}
                 }, 300)
             }
@@ -153,31 +155,25 @@ const Plugin = ({ setFieldValue, values }: IFormFieldPluginProps) => {
                 display: 'flex',
                 alignItems: 'center',
                 padding: '12px 0',
-                width: '100% !important',
+                width: '100%',
                 height: '100% !important',
-                paddingLeft: '16px',
-                backgroundColor: '#FBFCFD',
                 borderBottom: '1px solid #e8edf2',
-                borderTop: '1px solid #e8edf2',
             }}
         >
             <span 
                 style={{ 
+                    paddingLeft: '17px',
                     minWidth: '40%', 
                     fontSize: '14px', 
-                    color: 'rgba(0, 0, 0, 0.87) !important', 
-                    left: 0
+                    fontFamily: 'Roboto, sans-serif',
+                    color: 'rgba(0, 0, 0, 0.85)', 
                 }}
             >
                 Manage PHN
             </span>
             <span 
                 style={{ 
-                    display: 'flex', 
-                    justifyContent: 'flex-start', 
-                    width: '100%',
-                    left: '0',
-                    // border: '1px solid'
+                    paddingLeft: '4px'
                 }}>
                 <ButtonStrip>
                     <StatusButton
