@@ -2,6 +2,9 @@ services:
   dhis2-db:
     volumes:
       - dhis2-db:/var/lib/postgresql/data
+  dhis2:
+    volumes:
+      - ./esignet_online.jks:/opt/dhis2/esignet_online.jks:ro
   reverse-proxy:
     ports:
       - "80:80"

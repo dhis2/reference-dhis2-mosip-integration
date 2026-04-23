@@ -4,6 +4,10 @@
       "id": "default",
       "elements": [
         {
+          "id": "CSZevH4P5yV",
+          "type": "TrackedEntityAttribute"
+        },
+        {
           "id": "esignet-capture-plugin",
           "type": "plugin",
           "fieldMap": [
@@ -56,10 +60,6 @@
           "pluginSource": "https://mosip.integration.dhis2.org/api/apps/esignet-capture-plugin/plugin.html"
         },
         {
-          "id": "CSZevH4P5yV",
-          "type": "TrackedEntityAttribute"
-        },
-        {
           "id": "u5AESfSOhIG",
           "type": "TrackedEntityAttribute"
         },
@@ -86,6 +86,23 @@
         {
           "id": "IrUmPkFMDU5",
           "type": "TrackedEntityAttribute"
+        },
+        {
+          "id": "srilanka-phn-generator-plugin",
+          "type": "plugin",
+          "fieldMap": [
+            {
+              "IdFromApp": "IrUmPkFMDU5",
+              "objectType": "TrackedEntityAttribute",
+              "IdFromPlugin": "phn"
+            },
+            {
+              "IdFromApp": "JTKAPrAGCai",
+              "objectType": "TrackedEntityAttribute",
+              "IdFromPlugin": "isPhnVerified"
+            }
+          ],
+          "pluginSource": "https://mosip.integration.dhis2.org/api/apps/srilanka-phn-generator-plugin/plugin.html"
         },
         {
           "id": "gGAQeOr1Pgu",
