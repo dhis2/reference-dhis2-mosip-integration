@@ -13,13 +13,14 @@ services:
       - ehr
     volumes:
       - ./config/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./config/reverse-proxy/dhis2-mec-fullchain.pem:/dhis2-mec-fullchain.pem:ro
+      - ./config/reverse-proxy/dhis2-mec-privkey.pem:/dhis2-mec-privkey.pem:ro
   ehr:
     volumes:
       - ehr-db:/tmp
     environment:
-      HAPI_FHIR_TESTER_HOME_SERVER_ADDRESS: https://mosip.integration.dhis2.org/nehr/fhir
-      HAPI_FHIR_SERVER_ADDRESS: https://mosip.integration.dhis2.org/nehr/fhir
+      HAPI_FHIR_TESTER_HOME_SERVER_ADDRESS: https://dhis2.mec.mosip.net/nehr/fhir
+      HAPI_FHIR_SERVER_ADDRESS: https://dhis2.mec.mosip.net/nehr/fhir
       SPRING_DATASOURCE_URL: jdbc:h2:file:/tmp/data/h2
   esignet-db:
     volumes:

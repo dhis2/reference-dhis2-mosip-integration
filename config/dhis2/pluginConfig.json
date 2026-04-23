@@ -57,7 +57,7 @@
               "IdFromPlugin": "individualId"
             }
           ],
-          "pluginSource": "https://mosip.integration.dhis2.org/api/apps/esignet-capture-plugin/plugin.html"
+          "pluginSource": "https://dhis2.mec.mosip.net/api/apps/esignet-capture-plugin/plugin.html"
         },
         {
           "id": "u5AESfSOhIG",
@@ -102,7 +102,7 @@
               "IdFromPlugin": "isPhnVerified"
             }
           ],
-          "pluginSource": "https://mosip.integration.dhis2.org/api/apps/srilanka-phn-generator-plugin/plugin.html"
+          "pluginSource": "https://dhis2.mec.mosip.net/api/apps/srilanka-phn-generator-plugin/plugin.html"
         },
         {
           "id": "gGAQeOr1Pgu",
