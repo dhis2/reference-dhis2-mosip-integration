@@ -1,7 +1,7 @@
 {
   "name": "Search Patient on NEHR",
   "code": "queryNehr",
-  "url": "https://mosip.integration.dhis2.org/nehr/fhir/Patient/_search",
+  "url": "https://dhis2.mec.mosip.net/nehr/fhir/Patient/_search",
   "headers": {
     "Content-Type": "application/json"
   },
