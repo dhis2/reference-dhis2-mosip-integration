@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, mosip.integration.dhis2.org ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, mosip.integration.dhis2.org ]
   schedule:
     - cron: '0 0 * * *'
 
